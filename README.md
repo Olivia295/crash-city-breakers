@@ -8,7 +8,7 @@
 
 Inspired by *Burnout CRASH!*, rebuilt from scratch with Three.js and Rapier physics. Three cities, 23 vehicle types, four rulesets, perk drafts, contracts and a daily challenge.
 
-[**▶ Play online**](LIVE_URL) · [Features](#features) · [How it works](#how-it-works) · [Get started](#get-started) · [Development](#local-development)
+[**▶ Play online**](https://crash-city-breakers.vercel.app) · [Features](#features) · [How it works](#how-it-works) · [Get started](#get-started) · [Development](#local-development)
 
 **English** · [简体中文](README.zh-CN.md)
 
@@ -122,7 +122,7 @@ scripts/                    asset build + Playwright browser checks
 
 ### Play online
 
-Open **[LIVE_URL](LIVE_URL)** in a desktop browser with WebGL 2. Nothing to install.
+Open **[https://crash-city-breakers.vercel.app](https://crash-city-breakers.vercel.app)** in a desktop browser with WebGL 2. Nothing to install.
 
 ### Controls
 

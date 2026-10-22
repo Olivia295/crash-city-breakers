@@ -8,7 +8,7 @@
 
 灵感来自 *Burnout CRASH!*，用 Three.js 与 Rapier 物理从零重做。三座城市、23 种车型、四种规则、波间强化、合约与每日挑战。
 
-[**▶ 在线试玩**](LIVE_URL) · [特色](#特色) · [运行原理](#运行原理) · [开始游玩](#开始游玩) · [本地开发](#本地开发)
+[**▶ 在线试玩**](https://crash-city-breakers.vercel.app) · [特色](#特色) · [运行原理](#运行原理) · [开始游玩](#开始游玩) · [本地开发](#本地开发)
 
 [English](README.md) · **简体中文**
 
@@ -122,7 +122,7 @@ scripts/                    资源构建 + Playwright 浏览器检查
 
 ### 在线试玩
 
-用支持 WebGL 2 的桌面浏览器打开 **[LIVE_URL](LIVE_URL)**，无需安装。
+用支持 WebGL 2 的桌面浏览器打开 **[https://crash-city-breakers.vercel.app](https://crash-city-breakers.vercel.app)**，无需安装。
 
 ### 操作
 
