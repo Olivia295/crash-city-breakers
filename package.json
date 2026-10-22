@@ -1,0 +1,32 @@
+{
+  "name": "crash-city-breakers",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "assets": "node --experimental-strip-types scripts/build-assets.mjs",
+    "test:browser": "node scripts/reference-playtest.mjs",
+    "test:flows": "node scripts/reference-flows.mjs",
+    "test:effects": "node scripts/reference-effects.mjs",
+    "test:performance": "node scripts/browser-performance.mjs",
+    "test:cities": "node scripts/city-playtest.mjs",
+    "test:city-ui": "node scripts/city-ui-flows.mjs",
+    "assets:previews": "node scripts/build-vehicle-previews.mjs",
+    "test:language": "node scripts/language-ui-flows.mjs"
+  },
+  "dependencies": {
+    "three": "^0.180.0",
+    "@dimforge/rapier3d-compat": "^0.19.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "typescript": "^5.9.0",
+    "vite": "^6.3.0",
+    "vitest": "^3.2.0",
+    "@playwright/test": "^1.55.0"
+  }
+}

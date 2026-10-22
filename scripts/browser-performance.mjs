@@ -1,0 +1,38 @@
+import {chromium} from '@playwright/test';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+const city=process.env.CRASH_CITY||'sf',language=process.env.CRASH_LANGUAGE==='en'?'en':'zh';
+if(!['sf','sydney','london'].includes(city))throw new Error('Unknown CRASH_CITY');
+const out=`${process.env.CRASH_ARTIFACTS||'artifacts/polish-v4'}/performance-${city}`;await fs.mkdir(out,{recursive:true});
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--no-sandbox']});
+const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});const errors=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
+await page.goto(process.env.CRASH_URL||'http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+if(language==='en')await page.locator('[data-action=language]').click();
+await page.locator(`[data-config=city][data-value=${city}]`).click();
+await page.locator('[data-config=rules][data-value=rushhour]').click();
+await page.locator('[data-action=start]').click();
+await page.evaluate(()=>{window.__perfTimes=[];let previous=performance.now();function sample(now){window.__perfTimes.push(now-previous);previous=now;if(window.__perfTimes.length<9000)requestAnimationFrame(sample);}requestAnimationFrame(sample);});
+const devHookAbsent=await page.evaluate(()=>typeof window.__CRASH__==='undefined');
+const started=Date.now();const samples=[],untranslated=new Set();
+for(let i=0;i<102;i++){
+ await page.waitForTimeout(1000);
+ const before=await page.evaluate(()=>({ended:!!document.querySelector('.result-screen'),time:document.querySelector('[data-field="trafficRemaining"]')?.textContent}));
+ if(!before.ended&&before.time!=='0:00')await page.keyboard.press('Space');
+ if(!before.ended&&before.time!=='0:00'&&i%13===4)await page.keyboard.press('KeyQ');
+ if(!before.ended&&before.time!=='0:00'&&i%5===0)await page.mouse.move(500+(i%4)*130,340+(i%3)*120);
+ if(!before.ended&&before.time!=='0:00'&&i%8===0)await page.keyboard.down(['KeyD','KeyS','KeyA','KeyW'][Math.floor(i/8)%4]);
+ if(i%8===2)await page.keyboard.up(['KeyD','KeyS','KeyA','KeyW'][Math.floor(i/8)%4]);
+ const row=await page.evaluate(()=>({fps:Number(document.querySelector('[data-field="fps"]')?.textContent?.replace(' FPS','')),time:document.querySelector('[data-field="trafficRemaining"]')?.textContent,score:document.querySelector('[data-field="score"]')?.textContent,ended:!!document.querySelector('.result-screen')}));
+ if(language==='en')for(const line of await page.evaluate(()=>document.body.innerText.split('\n').filter(t=>/[\u3400-\u9fff]/.test(t)&&t.trim()!=='中文')))untranslated.add(line);
+ samples.push({wallSeconds:(Date.now()-started)/1000,...row});
+ if(i===20||i===70)await page.screenshot({path:`${out}/perf-${i+1}s.png`});
+ if(row.ended)break;
+}
+await page.keyboard.up('Space');await page.screenshot({path:`${out}/perf-full-round.png`});
+const sorted=samples.slice(5).filter(s=>!s.ended).map(s=>s.fps).filter(Number.isFinite).sort((a,b)=>a-b);
+const gpu=await page.evaluate(()=>{const g=document.querySelector('canvas')?.getContext('webgl2');const e=g?.getExtension('WEBGL_debug_renderer_info');return e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'unavailable';});
+const frameMs=await page.evaluate(()=>window.__perfTimes.slice(300).filter(v=>v>0).sort((a,b)=>a-b));
+const data={city,language,untranslated:[...untranslated],devHookAbsent,samplingMaxGapSeconds:Math.max(...samples.map((s,i)=>s.wallSeconds-(samples[i-1]?.wallSeconds||0))),frameTimeMs:{median:frameMs[Math.floor(frameMs.length*.5)],p95:frameMs[Math.floor(frameMs.length*.95)],p99:frameMs[Math.floor(frameMs.length*.99)]},date:new Date().toISOString(),browser:browser.version(),cpu:os.cpus()[0]?.model,memoryGiB:os.totalmem()/1024**3,os:`${os.platform()} ${os.release()}`,viewport:'1440x1000 @1x',quality:'high',gpu,wallSeconds:(Date.now()-started)/1000,ended:samples.at(-1)?.ended,fps:{min:sorted[0],p10:sorted[Math.floor(sorted.length*.1)],median:sorted[Math.floor(sorted.length*.5)]},samples,errors};
+await fs.writeFile(`${out}/performance.json`,JSON.stringify(data,null,2));console.log(JSON.stringify({...data,samples:undefined},null,2));await browser.close();
+if(!data.ended||!devHookAbsent||errors.length||untranslated.size)process.exitCode=1;

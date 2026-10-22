@@ -1,0 +1,263 @@
+{
+  "source": "src/render/models.ts:createModel",
+  "width": 640,
+  "height": 400,
+  "background": "transparent",
+  "view": "orthographic front three-quarter",
+  "webglContexts": 1,
+  "previews": [
+    {
+      "id": "compact",
+      "meshes": 1,
+      "triangles": 3326,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 81510,
+      "transparentRatio": 0.6816015625,
+      "file": "compact.png",
+      "bytes": 76074
+    },
+    {
+      "id": "sport",
+      "meshes": 1,
+      "triangles": 3438,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 88489,
+      "transparentRatio": 0.65433984375,
+      "file": "sport.png",
+      "bytes": 88120
+    },
+    {
+      "id": "pickup",
+      "meshes": 1,
+      "triangles": 3942,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 77697,
+      "transparentRatio": 0.69649609375,
+      "file": "pickup.png",
+      "bytes": 79389
+    },
+    {
+      "id": "bus",
+      "meshes": 1,
+      "triangles": 3320,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 96115,
+      "transparentRatio": 0.62455078125,
+      "file": "bus.png",
+      "bytes": 76035
+    },
+    {
+      "id": "van",
+      "meshes": 1,
+      "triangles": 3422,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 97522,
+      "transparentRatio": 0.6190546875,
+      "file": "van.png",
+      "bytes": 67140
+    },
+    {
+      "id": "semi",
+      "meshes": 1,
+      "triangles": 5118,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 93883,
+      "transparentRatio": 0.6332695312500001,
+      "file": "semi.png",
+      "bytes": 72728
+    },
+    {
+      "id": "tanker",
+      "meshes": 1,
+      "triangles": 5254,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 80391,
+      "transparentRatio": 0.6859726562499999,
+      "file": "tanker.png",
+      "bytes": 92924
+    },
+    {
+      "id": "carrier",
+      "meshes": 1,
+      "triangles": 5622,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 81843,
+      "transparentRatio": 0.6803007812499999,
+      "file": "carrier.png",
+      "bytes": 92878
+    },
+    {
+      "id": "tram",
+      "meshes": 1,
+      "triangles": 2808,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 98974,
+      "transparentRatio": 0.6133828125,
+      "file": "tram.png",
+      "bytes": 57858
+    },
+    {
+      "id": "taxi",
+      "meshes": 1,
+      "triangles": 3530,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 72318,
+      "transparentRatio": 0.7175078125000001,
+      "file": "taxi.png",
+      "bytes": 69060
+    },
+    {
+      "id": "booster",
+      "meshes": 1,
+      "triangles": 3598,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 86648,
+      "transparentRatio": 0.66153125,
+      "file": "booster.png",
+      "bytes": 82592
+    },
+    {
+      "id": "magnet",
+      "meshes": 1,
+      "triangles": 3598,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 64340,
+      "transparentRatio": 0.748671875,
+      "file": "magnet.png",
+      "bytes": 66291
+    },
+    {
+      "id": "ambulance",
+      "meshes": 1,
+      "triangles": 3902,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 82286,
+      "transparentRatio": 0.6785703125,
+      "file": "ambulance.png",
+      "bytes": 69999
+    },
+    {
+      "id": "bank",
+      "meshes": 1,
+      "triangles": 4766,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 89724,
+      "transparentRatio": 0.649515625,
+      "file": "bank.png",
+      "bytes": 73598
+    },
+    {
+      "id": "pizza",
+      "meshes": 1,
+      "triangles": 4758,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 87139,
+      "transparentRatio": 0.65961328125,
+      "file": "pizza.png",
+      "bytes": 74957
+    },
+    {
+      "id": "bulldozer",
+      "meshes": 1,
+      "triangles": 2034,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 71062,
+      "transparentRatio": 0.7224140625,
+      "file": "bulldozer.png",
+      "bytes": 58893
+    },
+    {
+      "id": "police",
+      "meshes": 1,
+      "triangles": 3386,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 70605,
+      "transparentRatio": 0.7241992187499999,
+      "file": "police.png",
+      "bytes": 60177
+    },
+    {
+      "id": "missile",
+      "meshes": 1,
+      "triangles": 4022,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 73344,
+      "transparentRatio": 0.7135,
+      "file": "missile.png",
+      "bytes": 78686
+    },
+    {
+      "id": "icecream",
+      "meshes": 1,
+      "triangles": 4286,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 59520,
+      "transparentRatio": 0.7675,
+      "file": "icecream.png",
+      "bytes": 58892
+    },
+    {
+      "id": "doubledecker",
+      "meshes": 1,
+      "triangles": 3680,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 95368,
+      "transparentRatio": 0.62746875,
+      "file": "doubledecker.png",
+      "bytes": 73017
+    },
+    {
+      "id": "blackcab",
+      "meshes": 1,
+      "triangles": 4218,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 71882,
+      "transparentRatio": 0.7192109375,
+      "file": "blackcab.png",
+      "bytes": 64587
+    },
+    {
+      "id": "ute",
+      "meshes": 1,
+      "triangles": 3914,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 81907,
+      "transparentRatio": 0.6800507812500001,
+      "file": "ute.png",
+      "bytes": 88670
+    },
+    {
+      "id": "roadtrain",
+      "meshes": 1,
+      "triangles": 7170,
+      "width": 640,
+      "height": 400,
+      "occupiedPixels": 92942,
+      "transparentRatio": 0.6369453125,
+      "file": "roadtrain.png",
+      "bytes": 78165
+    }
+  ]
+}

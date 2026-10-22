@@ -1,0 +1,1032 @@
+{
+  "author": "Crash City original parametric artwork",
+  "license": "Project original assets",
+  "revision": "v0.4 identifiable specials",
+  "units": "metres",
+  "forward": "+Z",
+  "pivot": "collider centre",
+  "textureCount": 0,
+  "assets": [
+    {
+      "id": "compact",
+      "file": "compact.glb",
+      "bytes": 118068,
+      "triangles": 3326,
+      "vertices": 2684,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.082,
+        1.167,
+        3.427
+      ],
+      "collider": [
+        1.8,
+        1.15,
+        3.3
+      ]
+    },
+    {
+      "id": "sport",
+      "file": "sport.glb",
+      "bytes": 128384,
+      "triangles": 3438,
+      "vertices": 2952,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.238,
+        1.055,
+        4.35
+      ],
+      "collider": [
+        1.95,
+        1.05,
+        4.2
+      ]
+    },
+    {
+      "id": "pickup",
+      "file": "pickup.glb",
+      "bytes": 139404,
+      "triangles": 3942,
+      "vertices": 3174,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.386,
+        1.677,
+        4.757
+      ],
+      "collider": [
+        2.05,
+        1.5,
+        4.7
+      ]
+    },
+    {
+      "id": "bus",
+      "file": "bus.glb",
+      "bytes": 125944,
+      "triangles": 3320,
+      "vertices": 2904,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.865,
+        2.41,
+        7.892
+      ],
+      "collider": [
+        2.45,
+        2.35,
+        8
+      ]
+    },
+    {
+      "id": "van",
+      "file": "van.glb",
+      "bytes": 123536,
+      "triangles": 3422,
+      "vertices": 2820,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.494,
+        2.121,
+        5.042
+      ],
+      "collider": [
+        2.2,
+        2.15,
+        5
+      ]
+    },
+    {
+      "id": "semi",
+      "file": "semi.glb",
+      "bytes": 209240,
+      "triangles": 5118,
+      "vertices": 4918,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.004,
+        2.482,
+        8.844
+      ],
+      "collider": [
+        2.55,
+        2.4,
+        9
+      ]
+    },
+    {
+      "id": "tanker",
+      "file": "tanker.glb",
+      "bytes": 195444,
+      "triangles": 5254,
+      "vertices": 4512,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.95,
+        2.702,
+        7.461
+      ],
+      "collider": [
+        2.5,
+        2.55,
+        7.5
+      ]
+    },
+    {
+      "id": "carrier",
+      "file": "carrier.glb",
+      "bytes": 227028,
+      "triangles": 5622,
+      "vertices": 5328,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.058,
+        2.833,
+        8.709
+      ],
+      "collider": [
+        2.6,
+        2.45,
+        8.5
+      ]
+    },
+    {
+      "id": "tram",
+      "file": "tram.glb",
+      "bytes": 119204,
+      "triangles": 2808,
+      "vertices": 2802,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.577,
+        2.949,
+        6.942
+      ],
+      "collider": [
+        2.45,
+        2.6,
+        7
+      ]
+    },
+    {
+      "id": "taxi",
+      "file": "taxi.glb",
+      "bytes": 137720,
+      "triangles": 3530,
+      "vertices": 3196,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.134,
+        1.425,
+        4.282
+      ],
+      "collider": [
+        1.85,
+        1.3,
+        4.2
+      ]
+    },
+    {
+      "id": "booster",
+      "file": "booster.glb",
+      "bytes": 135400,
+      "triangles": 3598,
+      "vertices": 3120,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.29,
+        1.105,
+        4.606
+      ],
+      "collider": [
+        2,
+        1.1,
+        4.4
+      ]
+    },
+    {
+      "id": "magnet",
+      "file": "magnet.glb",
+      "bytes": 137912,
+      "triangles": 3598,
+      "vertices": 3190,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.95,
+        2.419,
+        5.992
+      ],
+      "collider": [
+        2.5,
+        2.2,
+        6
+      ]
+    },
+    {
+      "id": "ambulance",
+      "file": "ambulance.glb",
+      "bytes": 143704,
+      "triangles": 3902,
+      "vertices": 3300,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.389,
+        2.405,
+        5.042
+      ],
+      "collider": [
+        2.1,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "bank",
+      "file": "bank.glb",
+      "bytes": 173864,
+      "triangles": 4766,
+      "vertices": 3994,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.6,
+        2.508,
+        5.802
+      ],
+      "collider": [
+        2.3,
+        2.3,
+        5.8
+      ]
+    },
+    {
+      "id": "pizza",
+      "file": "pizza.glb",
+      "bytes": 186128,
+      "triangles": 4758,
+      "vertices": 4336,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.389,
+        2.399,
+        4.662
+      ],
+      "collider": [
+        2.1,
+        2,
+        4.6
+      ]
+    },
+    {
+      "id": "bulldozer",
+      "file": "bulldozer.glb",
+      "bytes": 92100,
+      "triangles": 2034,
+      "vertices": 2178,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.957,
+        2.439,
+        5.951
+      ],
+      "collider": [
+        2.7,
+        2.4,
+        5.7
+      ]
+    },
+    {
+      "id": "police",
+      "file": "police.glb",
+      "bytes": 124116,
+      "triangles": 3386,
+      "vertices": 2842,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.29,
+        1.58,
+        4.679
+      ],
+      "collider": [
+        2,
+        1.4,
+        4.6
+      ]
+    },
+    {
+      "id": "missile",
+      "file": "missile.glb",
+      "bytes": 153272,
+      "triangles": 4022,
+      "vertices": 3546,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.95,
+        2.582,
+        6.752
+      ],
+      "collider": [
+        2.5,
+        2.5,
+        6.8
+      ]
+    },
+    {
+      "id": "icecream",
+      "file": "icecream.glb",
+      "bytes": 166560,
+      "triangles": 4286,
+      "vertices": 3871,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.494,
+        3.618,
+        4.852
+      ],
+      "collider": [
+        2.2,
+        2.2,
+        4.8
+      ]
+    },
+    {
+      "id": "doubledecker",
+      "file": "doubledecker.glb",
+      "bytes": 154476,
+      "triangles": 3680,
+      "vertices": 3636,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.92,
+        3.705,
+        8.655
+      ],
+      "collider": [
+        2.5,
+        3.7,
+        8.8
+      ]
+    },
+    {
+      "id": "blackcab",
+      "file": "blackcab.glb",
+      "bytes": 149200,
+      "triangles": 4218,
+      "vertices": 3400,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.29,
+        1.824,
+        4.567
+      ],
+      "collider": [
+        2,
+        1.7,
+        4.5
+      ]
+    },
+    {
+      "id": "ute",
+      "file": "ute.glb",
+      "bytes": 148292,
+      "triangles": 3914,
+      "vertices": 3426,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.492,
+        1.905,
+        5.232
+      ],
+      "collider": [
+        2.15,
+        1.7,
+        5.2
+      ]
+    },
+    {
+      "id": "roadtrain",
+      "file": "roadtrain.glb",
+      "bytes": 301844,
+      "triangles": 7170,
+      "vertices": 7148,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.058,
+        2.982,
+        12.684
+      ],
+      "collider": [
+        2.6,
+        2.9,
+        13
+      ]
+    },
+    {
+      "id": "crate",
+      "file": "crate.glb",
+      "bytes": 6076,
+      "triangles": 60,
+      "vertices": 120,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "barrier",
+      "file": "barrier.glb",
+      "bytes": 7016,
+      "triangles": 72,
+      "vertices": 144,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "sign",
+      "file": "sign.glb",
+      "bytes": 5164,
+      "triangles": 48,
+      "vertices": 96,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "lamp",
+      "file": "lamp.glb",
+      "bytes": 6128,
+      "triangles": 88,
+      "vertices": 116,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "facade",
+      "file": "facade.glb",
+      "bytes": 8888,
+      "triangles": 96,
+      "vertices": 192,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "money",
+      "file": "money.glb",
+      "bytes": 8548,
+      "triangles": 160,
+      "vertices": 172,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    },
+    {
+      "id": "trailer",
+      "file": "trailer.glb",
+      "bytes": 80808,
+      "triangles": 1844,
+      "vertices": 1898,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        1,
+        1,
+        1
+      ],
+      "scale": "unit xyz; entity.scale supplies dimensions"
+    }
+  ],
+  "wrecks": [
+    {
+      "id": "compact",
+      "file": "wrecks/compact.glb",
+      "bytes": 118088,
+      "triangles": 3326,
+      "vertices": 2684,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.164,
+        0.816,
+        3.104
+      ],
+      "collider": [
+        1.8,
+        1.15,
+        3.3
+      ]
+    },
+    {
+      "id": "sport",
+      "file": "wrecks/sport.glb",
+      "bytes": 128408,
+      "triangles": 3438,
+      "vertices": 2952,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.361,
+        0.76,
+        3.945
+      ],
+      "collider": [
+        1.95,
+        1.05,
+        4.2
+      ]
+    },
+    {
+      "id": "pickup",
+      "file": "wrecks/pickup.glb",
+      "bytes": 139420,
+      "triangles": 3942,
+      "vertices": 3174,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.479,
+        1.188,
+        4.318
+      ],
+      "collider": [
+        2.05,
+        1.5,
+        4.7
+      ]
+    },
+    {
+      "id": "bus",
+      "file": "wrecks/bus.glb",
+      "bytes": 125964,
+      "triangles": 3320,
+      "vertices": 2904,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.997,
+        1.526,
+        7.24
+      ],
+      "collider": [
+        2.45,
+        2.35,
+        8
+      ]
+    },
+    {
+      "id": "van",
+      "file": "wrecks/van.glb",
+      "bytes": 123556,
+      "triangles": 3422,
+      "vertices": 2820,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.525,
+        1.432,
+        4.578
+      ],
+      "collider": [
+        2.2,
+        2.15,
+        5
+      ]
+    },
+    {
+      "id": "semi",
+      "file": "wrecks/semi.glb",
+      "bytes": 209260,
+      "triangles": 5118,
+      "vertices": 4918,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.111,
+        1.716,
+        8.082
+      ],
+      "collider": [
+        2.55,
+        2.4,
+        9
+      ]
+    },
+    {
+      "id": "tanker",
+      "file": "wrecks/tanker.glb",
+      "bytes": 195464,
+      "triangles": 5254,
+      "vertices": 4512,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.035,
+        1.948,
+        6.844
+      ],
+      "collider": [
+        2.5,
+        2.55,
+        7.5
+      ]
+    },
+    {
+      "id": "carrier",
+      "file": "wrecks/carrier.glb",
+      "bytes": 227052,
+      "triangles": 5622,
+      "vertices": 5328,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.161,
+        2.043,
+        7.955
+      ],
+      "collider": [
+        2.6,
+        2.45,
+        8.5
+      ]
+    },
+    {
+      "id": "tram",
+      "file": "wrecks/tram.glb",
+      "bytes": 119220,
+      "triangles": 2808,
+      "vertices": 2802,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3,
+        1.668,
+        6.399
+      ],
+      "collider": [
+        2.45,
+        2.6,
+        7
+      ]
+    },
+    {
+      "id": "taxi",
+      "file": "wrecks/taxi.glb",
+      "bytes": 137740,
+      "triangles": 3530,
+      "vertices": 3196,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.188,
+        1.023,
+        3.884
+      ],
+      "collider": [
+        1.85,
+        1.3,
+        4.2
+      ]
+    },
+    {
+      "id": "booster",
+      "file": "wrecks/booster.glb",
+      "bytes": 135416,
+      "triangles": 3598,
+      "vertices": 3120,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.402,
+        0.796,
+        4.193
+      ],
+      "collider": [
+        2,
+        1.1,
+        4.4
+      ]
+    },
+    {
+      "id": "magnet",
+      "file": "wrecks/magnet.glb",
+      "bytes": 137932,
+      "triangles": 3598,
+      "vertices": 3190,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.076,
+        1.686,
+        5.445
+      ],
+      "collider": [
+        2.5,
+        2.2,
+        6
+      ]
+    },
+    {
+      "id": "ambulance",
+      "file": "wrecks/ambulance.glb",
+      "bytes": 143724,
+      "triangles": 3902,
+      "vertices": 3300,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.437,
+        1.574,
+        4.578
+      ],
+      "collider": [
+        2.1,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "bank",
+      "file": "wrecks/bank.glb",
+      "bytes": 173884,
+      "triangles": 4766,
+      "vertices": 3994,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.659,
+        1.626,
+        5.288
+      ],
+      "collider": [
+        2.3,
+        2.3,
+        5.8
+      ]
+    },
+    {
+      "id": "pizza",
+      "file": "wrecks/pizza.glb",
+      "bytes": 186148,
+      "triangles": 4758,
+      "vertices": 4336,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.477,
+        1.717,
+        4.231
+      ],
+      "collider": [
+        2.1,
+        2,
+        4.6
+      ]
+    },
+    {
+      "id": "bulldozer",
+      "file": "wrecks/bulldozer.glb",
+      "bytes": 92120,
+      "triangles": 2034,
+      "vertices": 2178,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.957,
+        1.606,
+        5.347
+      ],
+      "collider": [
+        2.7,
+        2.4,
+        5.7
+      ]
+    },
+    {
+      "id": "police",
+      "file": "wrecks/police.glb",
+      "bytes": 124136,
+      "triangles": 3386,
+      "vertices": 2842,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.33,
+        1.133,
+        4.243
+      ],
+      "collider": [
+        2,
+        1.4,
+        4.6
+      ]
+    },
+    {
+      "id": "missile",
+      "file": "wrecks/missile.glb",
+      "bytes": 153292,
+      "triangles": 4022,
+      "vertices": 3546,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.044,
+        1.597,
+        6.139
+      ],
+      "collider": [
+        2.5,
+        2.5,
+        6.8
+      ]
+    },
+    {
+      "id": "icecream",
+      "file": "wrecks/icecream.glb",
+      "bytes": 166584,
+      "triangles": 4286,
+      "vertices": 3871,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.795,
+        2.339,
+        4.405
+      ],
+      "collider": [
+        2.2,
+        2.2,
+        4.8
+      ]
+    },
+    {
+      "id": "doubledecker",
+      "file": "wrecks/doubledecker.glb",
+      "bytes": 154496,
+      "triangles": 3680,
+      "vertices": 3636,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.022,
+        2.565,
+        7.947
+      ],
+      "collider": [
+        2.5,
+        3.7,
+        8.8
+      ]
+    },
+    {
+      "id": "blackcab",
+      "file": "wrecks/blackcab.glb",
+      "bytes": 149220,
+      "triangles": 4218,
+      "vertices": 3400,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.297,
+        1.31,
+        4.144
+      ],
+      "collider": [
+        2,
+        1.7,
+        4.5
+      ]
+    },
+    {
+      "id": "ute",
+      "file": "wrecks/ute.glb",
+      "bytes": 148320,
+      "triangles": 3914,
+      "vertices": 3426,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        2.548,
+        1.367,
+        4.751
+      ],
+      "collider": [
+        2.15,
+        1.7,
+        5.2
+      ]
+    },
+    {
+      "id": "roadtrain",
+      "file": "wrecks/roadtrain.glb",
+      "bytes": 301860,
+      "triangles": 7170,
+      "vertices": 7148,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.122,
+        2.054,
+        11.589
+      ],
+      "collider": [
+        2.6,
+        2.9,
+        13
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "roadtrain_cab",
+      "file": "roadtrain_cab.glb",
+      "bytes": 156868,
+      "triangles": 4266,
+      "vertices": 3604,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.058,
+        2.982,
+        5.232
+      ],
+      "collider": [
+        2.6,
+        2.9,
+        5.2
+      ]
+    },
+    {
+      "id": "roadtrain_cab",
+      "file": "wrecks/roadtrain_cab.glb",
+      "bytes": 156888,
+      "triangles": 4266,
+      "vertices": 3604,
+      "meshes": 1,
+      "materials": 1,
+      "bounds": [
+        3.121,
+        1.902,
+        4.751
+      ],
+      "collider": [
+        2.6,
+        2.9,
+        5.2
+      ]
+    }
+  ]
+}
