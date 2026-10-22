@@ -18,6 +18,7 @@ Inspired by *Burnout CRASH!*, rebuilt from scratch with Three.js and Rapier phys
 ![Rapier](https://img.shields.io/badge/Rapier-0.19-E05D44)
 ![Tests](https://img.shields.io/badge/tests-116%20passing-2ea44f)
 ![Version](https://img.shields.io/badge/version-0.5.0-ffd24a)
+![License MIT](https://img.shields.io/badge/license-MIT-blue)
 
 </div>
 
@@ -225,4 +226,6 @@ In your browser's `localStorage` under `crash-city:world-tour-v3`. Clearing site
 
 An original tribute to the intersection-crash loop of *Burnout CRASH!* (Criterion Games). City layouts, vehicle models, abilities, rewards, sound and all code are made in this project; nothing from the original game is copied.
 
-<!-- TODO: choose a license and add a LICENSE file -->
+## License
+
+[MIT](LICENSE) © 2026 Olivia Pan. *Burnout* and *Burnout CRASH!* are trademarks of their respective owners; this project is not affiliated with or endorsed by them.

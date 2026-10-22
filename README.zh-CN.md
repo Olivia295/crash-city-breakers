@@ -18,6 +18,7 @@
 ![Rapier](https://img.shields.io/badge/Rapier-0.19-E05D44)
 ![Tests](https://img.shields.io/badge/tests-116%20passing-2ea44f)
 ![Version](https://img.shields.io/badge/version-0.5.0-ffd24a)
+![License MIT](https://img.shields.io/badge/license-MIT-blue)
 
 </div>
 
@@ -225,4 +226,6 @@ npm run dev
 
 向 *Burnout CRASH!*（Criterion Games）的路口撞车玩法致敬的原创作品。城市布局、车辆模型、技能、奖励、音效和全部代码都在本项目内制作，没有复制原作的任何内容。
 
-<!-- TODO: 选择许可证并添加 LICENSE 文件 -->
+## 许可证
+
+[MIT](LICENSE) © 2026 Olivia Pan。*Burnout* 与 *Burnout CRASH!* 是各自所有者的商标；本项目与其没有从属或背书关系。
