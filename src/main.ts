@@ -3,7 +3,7 @@ import {GameSimulation,type GameInput} from './simulation/GameSimulation';
 import {GameRenderer} from './render/GameRenderer';
 import {GameUI} from './ui/GameUI';
 import {GameAudio} from './audio/GameAudio';
-import {DEFAULT_CONFIG,DEFAULT_SETTINGS,VEHICLES,RULE_VERSION,type RunConfig,type RunResult,type Settings,type GameSnapshot,type Feature,type VehicleKind,type Profile} from './shared';
+import {DEFAULT_CONFIG,DEFAULT_SETTINGS,VEHICLES,RULE_VERSION,ROUTES,PLAYER_CARS,BLAST_MODS,PASSIVE_MODS,type RunConfig,type RunResult,type Settings,type GameSnapshot,type Feature,type VehicleKind,type Profile} from './shared';
 import {PAINTS,dailyKey,dailySetup,dailyStreak} from './simulation/perks';
 import {cityRoutes,getCity,cityGroundHeight} from './cities';
 import {translate} from './i18n';
@@ -11,18 +11,32 @@ import {isTouchDevice,createTouchStick} from './touch';
 
 const STORAGE='crash-city:world-tour-v3';
 const DEFAULT_PROFILE:Profile={stars:0,paint:'stock',best:{}};
+/** The garage opens on whatever the player picked last time. Unknown values fall back to the defaults. */
+function sanitizeConfig(v:any):RunConfig{
+ const c:RunConfig={...DEFAULT_CONFIG};
+ if(v&&typeof v==='object'){
+  if(['sf','sydney','london'].includes(v.city))c.city=v.city;
+  if(ROUTES.some(r=>r.id===v.route))c.route=v.route;
+  if(PLAYER_CARS.includes(v.car))c.car=v.car;
+  if(['roadtrip','rushhour','pileup','sandbox'].includes(v.rules))c.rules=v.rules;
+  if(BLAST_MODS.some(b=>b.id===v.blast))c.blast=v.blast;
+  if(PASSIVE_MODS.some(p=>p.id===v.passive))c.passive=v.passive;
+ }
+ return c;
+}
+function readLast():RunConfig{try{return sanitizeConfig(JSON.parse(localStorage.getItem(STORAGE)||'{}').last);}catch{return {...DEFAULT_CONFIG};}}
 function readSaved():{records:RunResult[];settings:Settings;profile:Profile}{
  try{const v=JSON.parse(localStorage.getItem(STORAGE)||'{}');return {records:Array.isArray(v.records)?v.records.filter((r:RunResult)=>Number.isFinite(r.score)&&r.config&&r.config.car in VEHICLES).slice(0,60):[],settings:{...DEFAULT_SETTINGS,...v.settings,language:v.settings?.language==='en'?'en':'zh'},profile:{stars:Math.max(0,Number(v.profile?.stars)||0),paint:PAINTS.some(p=>p.id===v.profile?.paint)?v.profile.paint:'stock',best:{}}};}catch{return{records:[],settings:{...DEFAULT_SETTINGS},profile:{...DEFAULT_PROFILE}};}
 }
 const saved=readSaved();let records=saved.records;let settings=saved.settings;let profile=saved.profile;
 if(!PAINTS.find(p=>p.id===profile.paint&&p.stars<=profile.stars))profile.paint='stock';
-let config:RunConfig={...DEFAULT_CONFIG};let game:GameSimulation;let renderer:GameRenderer;const audio=new GameAudio();
+let config:RunConfig=readLast();let game:GameSimulation;let renderer:GameRenderer;const audio=new GameAudio();
 let ready=false;let showingResult=false;let endedAt=0;let result:RunResult|undefined;let duel:{base:RunConfig;first?:RunResult;round:1|2}|undefined;
 let last=performance.now();const held=new Set<string>();let pointer={x:0,y:0,z:1};let pointerMoved=false;let requestBlast=false;let requestAbility=false;
 const touchMode=isTouchDevice();let stick:ReturnType<typeof createTouchStick>|undefined;let portrait=false;
 let lastSnapshot:GameSnapshot|undefined;let latestFPS=60;let frameCount=0;let frameTime=0;
 const worldElement=document.querySelector<HTMLElement>('#world')!;const uiElement=document.querySelector<HTMLElement>('#ui')!;
-function save(){try{localStorage.setItem(STORAGE,JSON.stringify({records,settings,profile}));}catch{ui.toast('本机存储不可用；本次游戏仍可正常进行');}}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify({records,settings,profile,last:{city:config.city,route:config.route,car:config.car,rules:config.rules,blast:config.blast,passive:config.passive}}));}catch{ui.toast('本机存储不可用；本次游戏仍可正常进行');}}
 function dailyInfo(){const date=dailyKey(),setup=dailySetup(date),mine=records.filter(r=>r.config.daily===date);return {setup,best:Math.max(0,...mine.map(r=>r.score)),streak:dailyStreak(records.filter(r=>r.config.daily).map(r=>r.config.daily!),date)};}
 function freshSeed(){return crypto.getRandomValues(new Uint32Array(1))[0];}
 function reset(next:RunConfig,start:boolean){
@@ -56,8 +70,8 @@ async function share(){
   const gradient=c.createLinearGradient(0,320,0,760);gradient.addColorStop(0,'rgba(17,34,37,0)');gradient.addColorStop(1,'#112225');c.fillStyle=gradient;c.fillRect(0,320,1200,580);
   c.fillStyle='#ffc76b';c.font='italic 900 105px Arial Black, Arial';c.fillText('CRASH!',64,625);
   c.fillStyle='#fff7e8';c.font='900 106px Arial';c.fillText(result.score.toLocaleString(),62,735);
-  c.fillStyle='#83d4c4';c.font='24px sans-serif';c.fillText(translate(`${getCity(result.config.city).name} · ${cityRoutes(result.config.city).find(r=>r.id===result!.config.route)!.short}  /  ${VEHICLES[result.config.car].name}`,settings.language),68,790);
-  c.fillStyle='#ccd3c8';c.font='21px sans-serif';c.fillText(translate(`最高连锁 ${result.bestCombo}   ·   命中 ${result.crashes}   ·   摧毁 ${result.destroyed}`,settings.language),68,833);
+  c.fillStyle='#83d4c4';c.font='24px sans-serif';c.fillText(translate(`${getCity(result.config.city).name}    ${cityRoutes(result.config.city).find(r=>r.id===result!.config.route)!.short}    ${VEHICLES[result.config.car].name}`,settings.language),68,790);
+  c.fillStyle='#ccd3c8';c.font='21px sans-serif';c.fillText(translate(`最高连锁 ${result.bestCombo}      命中 ${result.crashes}      摧毁 ${result.destroyed}`,settings.language),68,833);
   c.font='14px monospace';c.fillStyle='#8faaa8';c.fillText(`${RULE_VERSION} / ${result.config.blast} / ${result.config.passive} / CHALLENGE ${result.config.seed}`,68,868);
   const dataUrl=canvas.toDataURL('image/jpeg',.9);
   const a=document.createElement('a');a.download=`CRASH-${result.score}-${result.config.seed}.jpg`;a.href=dataUrl;a.click();ui.toast('成绩图已导出，可以分享给朋友');
@@ -65,7 +79,7 @@ async function share(){
 }
 const ui=new GameUI(uiElement,{
  onDraft(index){game.pickDraft(index);},onPaint(id){const paint=PAINTS.find(p=>p.id===id);if(!paint||paint.stars>profile.stars)return;profile={...profile,paint:id};save();if(ready&&game.phase==='ready')reset({...config},false);},
- onStart:start,onConfig(next){config={...next};if(ready&&game.phase==='ready')reset(config,false);},onPause:pause,onResume:resume,onRetry:retry,onMenu:enterMenu,onBlast(){if(!game.blast())ui.toast('爆破正在充能，满格后再引爆');},
+ onStart:start,onConfig(next){config={...next};save();if(ready&&game.phase==='ready')reset(config,false);},onPause:pause,onResume:resume,onRetry:retry,onMenu:enterMenu,onBlast(){if(!game.blast())ui.toast('爆破正在充能，满格后再引爆');},
  onAbility(){if(!game.activateAbility())ui.toast('技能尚未就绪：等冷却结束并保留足够爆破能量');},
  onMechanism(id){game.useMechanism(id);},onMechanismMode(){game.toggleMechanisms();},onSettings(next){settings={...next};save();},onShare(){void share();},
  onNextPlayer(){if(!duel||!result)return;duel.first=result;duel.round=2;uiElement.dataset.challengeRound='2';reset({...duel.base},false);ui.showMenu(duel.base,records,settings,profile,dailyInfo());ui.toast('玩家 2：车辆、配装与车流已统一，可自行选择入场路线');},
@@ -77,6 +91,7 @@ window.addEventListener('pointermove',e=>{if(!renderer||!game)return;if(e.pointe
 worldElement.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||!renderer||!game)return;pointer=renderer.worldFromPointer(e.clientX,e.clientY);pointerMoved=true;});
 window.addEventListener('keydown',e=>{
  const editing=e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement;if(editing)return;
+ if(!(e.target instanceof HTMLButtonElement)&&(e.code==='Enter'||e.code==='NumpadEnter'||e.code==='KeyR')&&(e.code!=='KeyR'||ui.screenName==='results')&&ui.activatePrimary()){e.preventDefault();return;}
  if(e.code==='Escape'){if(game?.phase==='running')pause();else if(game?.phase==='paused')resume();return;}
  if(game?.phase!=='running')return;
  if(lastSnapshot?.draft&&['Digit1','Digit2','Digit3','Digit4'].includes(e.code)){e.preventDefault();if(!e.repeat)game.pickDraft(e.code==='Digit4'?-1:Number(e.code.slice(5))-1);return;}
@@ -105,6 +120,13 @@ function syncOrientation(){
 }
 function applyOrientation(){portrait=window.innerHeight>window.innerWidth;syncOrientation();renderer?.resize();}
 window.addEventListener('resize',applyOrientation);
+const TIPS_KEY='crash-city:tips';
+/** One short control reminder, the first time a round is actually running. Nothing permanent stays on screen. */
+function showFirstTip(snapshot:GameSnapshot){
+ if(snapshot.phase!=='running'||snapshot.draft)return;
+ try{if(localStorage.getItem(TIPS_KEY))return;localStorage.setItem(TIPS_KEY,'1');}catch{return;}
+ ui.toast(touchMode?'摇杆转向，撞上车流后点爆破键引爆':'撞上车流后，用鼠标瞄准并按空格引爆');
+}
 let hitStop=0,slowTime=0,lastEvent=0;
 /** Short freeze-frames and slow-motion make big chains land; both stand down when screen effects are off. */
 function juice(snapshot:GameSnapshot){
@@ -126,7 +148,7 @@ function frame(now:number){
  if(pointerMoved&&hero){aim={x:pointer.x-hero.x,y:0,z:pointer.z-hero.z};}else if(n)aim={x,y:0,z};
  const input:GameInput={x,z,aim,blast:requestBlast,ability:requestAbility};requestBlast=false;requestAbility=false;
  let scale=1;if(hitStop>0){scale=.05;hitStop-=dt;}else if(slowTime>0){scale=.38;slowTime-=dt;}
- game.update(dt*scale,input);const snapshot=game.snapshot();juice(snapshot);stick?.setVisible(game.phase==='running'&&!snapshot.draft);snapshot.fps=latestFPS;lastSnapshot=snapshot;
+ game.update(dt*scale,input);const snapshot=game.snapshot();juice(snapshot);stick?.setVisible(game.phase==='running'&&!snapshot.draft);showFirstTip(snapshot);snapshot.fps=latestFPS;lastSnapshot=snapshot;
  renderer.render(snapshot,dt,settings);audio.update(snapshot,settings);ui.update(snapshot);
  if(game.phase==='ended'&&!showingResult){
   if(!endedAt)endedAt=now;

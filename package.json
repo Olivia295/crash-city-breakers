@@ -1,6 +1,6 @@
 {
   "name": "crash-city-breakers",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,7 +16,9 @@
     "test:cities": "node scripts/city-playtest.mjs",
     "test:city-ui": "node scripts/city-ui-flows.mjs",
     "assets:previews": "node scripts/build-vehicle-previews.mjs",
-    "test:language": "node scripts/language-ui-flows.mjs"
+    "test:language": "node scripts/language-ui-flows.mjs",
+    "audit:copy": "node --experimental-strip-types scripts/audit-copy.mjs",
+    "audit:ui": "node scripts/audit-ui.mjs"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "^0.19.0",

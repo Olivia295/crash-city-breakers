@@ -15,11 +15,11 @@ interface Ring {mesh:THREE.Mesh<THREE.RingGeometry,THREE.MeshBasicMaterial>;age:
 interface Floater {el:HTMLDivElement;p:THREE.Vector3;age:number;life:number;big:boolean;key:string;}
 interface Fireball {alive:boolean;age:number;life:number;p:THREE.Vector3;size:number;}
 const SPECIAL_TARGETS:Partial<Record<VehicleKind,{text:string;color:string;priority:number}>>={
- pizza:{text:'披萨车 · 撞毁抽奖',color:'#ffd765',priority:100},ambulance:{text:'救护车 · 放行减罚',color:'#a6ffcb',priority:95},
- bank:{text:'运钞车 · 炸出钱袋',color:'#ffe59b',priority:85},tanker:{text:'罐车 · 连锁爆炸',color:'#ffad71',priority:75},
- icecream:{text:'冰淇淋车 · 冻结交通',color:'#a7eaff',priority:80},missile:{text:'导弹车 · 远程爆破',color:'#f5c4ff',priority:80},
- bulldozer:{text:'推土机 · 清除路障',color:'#ffdc7a',priority:65},doubledecker:{text:'双层巴士 · 侧翻封路',color:'#ff9da7',priority:50},
- roadtrain:{text:'双挂重卡 · 撞断挂车',color:'#81dfff',priority:55},
+ pizza:{text:'撞毁抽奖',color:'#ffd765',priority:100},ambulance:{text:'放行可抵消逃脱',color:'#a6ffcb',priority:95},
+ bank:{text:'炸出钱袋',color:'#ffe59b',priority:85},tanker:{text:'连锁爆炸',color:'#ffad71',priority:75},
+ icecream:{text:'冻结交通',color:'#a7eaff',priority:80},missile:{text:'远程爆破',color:'#f5c4ff',priority:80},
+ bulldozer:{text:'清除路障',color:'#ffdc7a',priority:65},doubledecker:{text:'侧翻封路',color:'#ff9da7',priority:50},
+ roadtrain:{text:'撞断挂车',color:'#81dfff',priority:55},
 };
 
 /** Renderer is a read-only adapter: all collisions, scoring and progress remain in the simulation. */
@@ -187,7 +187,7 @@ export class GameRenderer {
 
   private updateWorldLabel(){
     const city=getCity(this.city);
-    this.renderer.domElement.setAttribute('aria-label',`${translate(city.name,this.language)} · ${translate(city.district,this.language)} · ${this.language==='en'?'3D crash scene':'三维交通现场'}`);
+    this.renderer.domElement.setAttribute('aria-label',`${translate(city.name,this.language)} ${this.language==='en'?'3D crash scene':'三维交通现场'}`);
   }
 
   setOverview(route:RouteId,city:CityId='sf'):void{

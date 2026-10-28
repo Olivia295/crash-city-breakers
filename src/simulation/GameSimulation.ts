@@ -110,7 +110,7 @@ export class GameSimulation {
   e.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);return false;
  }
  private exitTraffic(e:Entity){
-  if(this.round.isPending(e.id)){const rescue=e.kind==='ambulance'&&!e.wrecked;this.round.resolve(e.id,rescue?'rescue':'escape');if(rescue)this.emit('special',e.body.translation(),1,'救护车安全通过 · 抵消一次逃脱','ambulance');}
+  if(this.round.isPending(e.id)){const rescue=e.kind==='ambulance'&&!e.wrecked;this.round.resolve(e.id,rescue?'rescue':'escape');if(rescue)this.emit('special',e.body.translation(),1,'救护车安全通过，抵消一次逃脱','ambulance');}
   this.remove(e);
  }
  private recoveryPoint(p:Vec3){
@@ -134,7 +134,7 @@ export class GameSimulation {
   }
  }
  private createPlayer(){const r=cityRoutes(this.config.city).find(r=>r.id===this.config.route)!;const e=this.vehicle(this.config.car,r.x,r.z,r.dx,r.dz,true);this.playerId=e.id;this.aim={x:r.dx,y:0,z:r.dz};}
- start(){this.phase='running';this.notice='冲进路口 · 首次撞击会充满爆破';this.noticeTime=7;const p=this.entities.get(this.playerId)!;p.body.setLinvel({x:p.direction.x*(p.speed+9),y:-1,z:p.direction.z*(p.speed+9)},true);this.emit('launch',p.body.translation(),1);}
+ start(){this.phase='running';this.notice='冲进路口，首次撞击会充满爆破槽';this.noticeTime=7;const p=this.entities.get(this.playerId)!;p.body.setLinvel({x:p.direction.x*(p.speed+9),y:-1,z:p.direction.z*(p.speed+9)},true);this.emit('launch',p.body.translation(),1);}
  pause(){if(this.phase==='running'){this.phaseBeforePause=this.phase;this.phase='paused';}}
  resume(){if(this.phase==='paused')this.phase=this.phaseBeforePause;}
  private get abilityCost(){const ability=PLAYER_ABILITIES[this.config.car];return ability?ability.cost*(this.perk('cooldown')?.7:1):0;}
@@ -144,7 +144,7 @@ export class GameSimulation {
   const cost=this.abilityCost;if(this.blastCharge<cost){this.say(`主动技能需要 ${Math.round(cost*100)}% 爆破能量`);return false;}
   this.blastCharge-=cost;this.abilityCooldown=ability.cooldown*(this.perk('cooldown')?.65:1);this.stats.abilityUses++;this.abilityAim={...this.aim};this.abilityStage=0;this.abilityPulse=0;
   const hero=this.entities.get(this.playerId)!;hero.wrecked=true;hero.body.setEnabledRotations(true,true,true,true);const p=hero.body.translation();
-  this.emit('special',p,1.5,ability.name,'ability',hero.id);this.say(`${ability.name} · 消耗 ${Math.round(cost*100)}% 爆破能量`);
+  this.emit('special',p,1.5,ability.name,'ability',hero.id);this.say(`${ability.name}，消耗 ${Math.round(cost*100)}% 能量`);
   if(this.config.car==='compact')this.abilityActive=2;
   if(this.config.car==='sport')this.abilityActive=.78;
   if(this.config.car==='pickup'){
@@ -176,7 +176,7 @@ export class GameSimulation {
   }
  }
  private triggerCityEvent(target:CityEventTarget){
-  const p={x:target.x,y:this.groundHeight(target.x,target.z)+1,z:target.z};this.emit('special',p,3,target.name,'city');this.say(`${target.name}！城市连锁启动`);this.scores.bonus(`city:${target.id}`,18000);
+  const p={x:target.x,y:this.groundHeight(target.x,target.z)+1,z:target.z};this.emit('special',p,3,target.name,'city');this.say(`${target.name}已触发`);this.scores.bonus(`city:${target.id}`,18000);
   if(target.kind==='derail'){
    for(let i=0;i<2;i++){const tram=this.vehicle('tram',TRAM_TRACK_X,-58-i*11,0,1);tram.wrecked=true;tram.body.setEnabledTranslations(true,true,true,true);tram.body.setEnabledRotations(true,true,true,true);tram.body.setLinvel({x:i?3:-2,y:2,z:33-i*3},true);}
   }else if(target.kind==='harbour'){
@@ -191,7 +191,7 @@ export class GameSimulation {
   if(!this.round.featureTime&&this.waveFeatures.length){this.rewardActive=false;this.activateFeature(this.waveFeatures.shift()!,8);}
   if(this.pizzaOnField)return;
   this.bonusNextIn=Math.max(0,this.bonusNextIn-dt);
-  if(this.bonusNextIn<=2.5&&!this.bonusWarned){this.bonusWarned=true;this.emit('warning',{x:this.city.center.x,y:2,z:this.city.center.z},1,'披萨奖励车即将到场 · 摧毁后抽奖','pizza');this.say('披萨奖励车即将到场 · 摧毁后抽奖');}
+  if(this.bonusNextIn<=2.5&&!this.bonusWarned){this.bonusWarned=true;this.emit('warning',{x:this.city.center.x,y:2,z:this.city.center.z},1,'披萨车即将到场，撞毁后抽奖','pizza');}
   if(this.bonusNextIn<=0&&this.age-this.lastPizzaAt>=10&&this.entities.size<140){
    this.spawnBonusVehicle('pizza');this.lastPizzaAt=this.age;this.bonusNextIn=18+this.encounterRand()*6;this.bonusWarned=false;
   }
@@ -244,7 +244,7 @@ export class GameSimulation {
     if(this.phase==='running'){
      if(!e.wrecked){const target=e.speed+10;e.body.setLinvel({x:e.direction.x*target+input.x*5,y:v.y,z:e.direction.z*target+input.z*5},true);}
      else if(input.x||input.z){const air=p.y-this.groundHeight(p.x,p.z)>2;const control=PLAYER_STATS[this.config.car]?.aftertouch??4;const force=(10+control*1.35)*(air?1.15:1)*(this.config.passive==='heavy'?.65:1);e.body.applyImpulse({x:input.x*e.mass*force*dt,y:0,z:input.z*e.mass*force*dt},true);}
-     if(Math.abs(p.x)>65||Math.abs(p.z)>65||p.y<-20){e.body.setTranslation(this.recoveryPoint(p),true);e.body.setLinvel({x:0,y:0,z:0},true);this.say('残骸回到现场 · 继续连锁！');}
+     if(Math.abs(p.x)>65||Math.abs(p.z)>65||p.y<-20){e.body.setTranslation(this.recoveryPoint(p),true);e.body.setLinvel({x:0,y:0,z:0},true);this.say('残骸已回到场内');}
      if(this.flightOrigin){const height=p.y-this.groundHeight(p.x,p.z);if(height>2.5)this.airborne=true;else if(this.airborne&&v.y<1){const distance=Math.hypot(p.x-this.flightOrigin.x,p.z-this.flightOrigin.z);if(distance>12){this.stats.skillshots++;const points=this.scores.bonus(`flight:${this.flightId}`,Math.min(12000,distance*150));this.emit('special',p,1,`${Math.round(distance*1.094)} yd SKILLSHOT +$${points.toLocaleString()}`);}this.flightOrigin=undefined;this.airborne=false;}}
     }
    }else if(!e.scale&&(!e.wrecked||e.kind==='bulldozer'&&!e.destroyed)){
@@ -262,7 +262,7 @@ export class GameSimulation {
       else if(e.kind==='blackcab'&&ahead>4&&(e.dodgeCooldown||0)<=this.age){
        const sideScore=(sign:number)=>{const tx=p.x+e.direction.x*6+e.direction.z*3.8*sign,tz=p.z+e.direction.z*6-e.direction.x*3.8*sign;let clearance=20;
         for(const blocker of this.entities.values()){if(blocker.id===e.id||blocker.kind==='money')continue;const q=blocker.body.translation();clearance=Math.min(clearance,Math.hypot(q.x-tx,q.z-tz)-(blocker.scale?Math.max(blocker.scale.x,blocker.scale.z)/2:2));}return clearance;};
-       const left=sideScore(-1),right=sideScore(1);if(Math.max(left,right)>1.1){e.dodgeSign=left>right?-1:1;e.dodgeUntil=this.age+.65;e.dodgeCooldown=this.age+2.4;this.emit('special',p,.65,'BLACK CAB · 钻缝加速',undefined,e.id);}
+       const left=sideScore(-1),right=sideScore(1);if(Math.max(left,right)>1.1){e.dodgeSign=left>right?-1:1;e.dodgeUntil=this.age+.65;e.dodgeCooldown=this.age+2.4;this.emit('special',p,.65,'黑出租钻缝加速',undefined,e.id);}
       }
       else if(e.kind==='taxi'&&ahead>4){dodge=2.8;speed*=.85;}
       else if(e.kind!=='bulldozer')speed=Math.min(speed,Math.max(other.wrecked&&this.config.rules!=='sandbox'?3.5:0,(ahead-length/2-2)*1.9));
@@ -294,7 +294,7 @@ export class GameSimulation {
    const key=a.id<b.id?`${a.id}:${b.id}`:`${b.id}:${a.id}`;if((this.interactionCooldown.get(key)||0)>this.age)return;this.interactionCooldown.set(key,this.age+.7);
    const power=clamp(speed/17,.12,2);const p=a.body.translation();
    this.emit('impact',p,power);this.hit(a,speed*3.7*(b.mass/a.mass)**.2);this.hit(b,speed*3.7*(a.mass/b.mass)**.2);this.chargeCityEvent(p,`collision:${key}`,1/3);
-   if(a.player||b.player){const hero=a.player?a:b;if(!this.rampaged){this.rampaged=true;this.blastCharge=1;this.say('CRASHBREAKER 就绪！按空格引爆 · 鼠标指向下一股车流');}hero.wrecked=true;hero.body.setEnabledRotations(true,true,true,true);}
+   if(a.player||b.player){const hero=a.player?a:b;if(!this.rampaged){this.rampaged=true;this.blastCharge=1;this.say('爆破就绪，瞄准下一股车流引爆');}hero.wrecked=true;hero.body.setEnabledRotations(true,true,true,true);}
   });
   if(this.config.rules!=='sandbox')for(const e of this.entities.values()){
    if(e.scale||e.wrecked||e.player)continue;let touchingWreck=false;
@@ -372,19 +372,19 @@ export class GameSimulation {
   if(e.kind==='booster'){e.body.applyImpulse({x:e.direction.x*e.mass*28,y:e.mass*4,z:e.direction.z*e.mass*28},true);this.emit('special',p,1,'二次推进！');}
   if(e.kind==='magnet'){this.emit('special',p,1,'磁场启动');}
   if(e.kind==='semi'){e.body.applyTorqueImpulse({x:e.mass*.2,y:e.mass*3,z:e.mass*.8},true);this.emit('special',p,.8,'重卡横封！');}
-  if(e.kind==='doubledecker'){e.body.setAngvel({x:e.direction.x*2.8,y:.5,z:e.direction.z*2.8},true);e.body.applyImpulse({x:e.direction.z*e.mass*5,y:e.mass*2,z:-e.direction.x*e.mass*5},true);this.emit('special',p,1.4,'DOUBLE DECKER · 双层横封！',undefined,e.id);}
-  if(e.kind==='ute'){for(let i=0;i<3;i++){if(this.entities.size>140)break;const tool=this.prop('crate',p.x+(i-1)*1.3,p.z,{x:.85,y:.65,z:1.2},130,950,0,2);tool.wrecked=true;tool.body.setLinvel({x:(i-1)*9,y:6,z:-e.direction.z*8},true);}this.emit('special',p,1,'UTE · 工具散落！',undefined,e.id);}
+  if(e.kind==='doubledecker'){e.body.setAngvel({x:e.direction.x*2.8,y:.5,z:e.direction.z*2.8},true);e.body.applyImpulse({x:e.direction.z*e.mass*5,y:e.mass*2,z:-e.direction.x*e.mass*5},true);this.emit('special',p,1.4,'双层巴士侧翻，横封车道',undefined,e.id);}
+  if(e.kind==='ute'){for(let i=0;i<3;i++){if(this.entities.size>140)break;const tool=this.prop('crate',p.x+(i-1)*1.3,p.z,{x:.85,y:.65,z:1.2},130,950,0,2);tool.wrecked=true;tool.body.setLinvel({x:(i-1)*9,y:6,z:-e.direction.z*8},true);}this.emit('special',p,1,'工程皮卡散落工具',undefined,e.id);}
   if(e.kind==='roadtrain'){
    e.collider.setHalfExtents({x:VEHICLES.roadtrain.width/2,y:VEHICLES.roadtrain.height/2,z:2.6});
    const yaw=Math.atan2(e.direction.x,e.direction.z);
    for(let i=0;i<2;i++){if(this.entities.size>140)break;const trailer=this.prop('trailer',p.x-e.direction.x*(3+i*5)+e.direction.z*(i-.5)*2,p.z-e.direction.z*(3+i*5)-e.direction.x*(i-.5)*2,{x:2.6,y:2.6,z:5.5},2400,3200,yaw+(i-.5)*.25,.5);trailer.wrecked=true;trailer.maxHealth=trailer.health=90;trailer.body.setLinvel({x:e.direction.x*7+e.direction.z*(i-.5)*9,y:2,z:e.direction.z*7-e.direction.x*(i-.5)*9},true);trailer.body.setAngvel({x:0,y:(i-.5)*1.8,z:0},true);}
-   this.emit('special',p,1.5,'ROAD TRAIN · 双挂脱离！',undefined,e.id);
+   this.emit('special',p,1.5,'双挂重卡脱离挂车',undefined,e.id);
   }
  }
  private destroySpecial(e:Entity){
   const p=e.body.translation();
   if(!e.scale&&!e.player&&!e.detonated&&e.fuse<0)e.fuse=(.65+this.physicsRand()*.55)*(this.perk('ember')?.6:1);
-  if(e.kind==='bank'){for(let i=0;i<5;i++){const bag=this.prop('money',p.x+Math.cos(i*1.256)*3,p.z+Math.sin(i*1.256)*3,{x:.9,y:.8,z:.8},1,0);bag.cash=5000;}this.emit('special',p,1,'CASH DASH · 靠近钱袋领奖','bank',e.id);}
+  if(e.kind==='bank'){for(let i=0;i<5;i++){const bag=this.prop('money',p.x+Math.cos(i*1.256)*3,p.z+Math.sin(i*1.256)*3,{x:.9,y:.8,z:.8},1,0);bag.cash=5000;}this.emit('special',p,1,'靠近钱袋领取奖金','bank',e.id);}
   if(e.kind==='pizza'&&this.phase==='running'&&this.round.stage!=='finale'&&this.round.stage!=='complete'){
    this.randomFeature();this.emit('special',p,1,'PIZZA OF FORTUNE!','pizza',e.id);this.bonusDraws++;
    if(this.bonusDraws%2===0&&this.entities.size<135){const kinds:VehicleKind[]=['bank','icecream','missile','carrier'];this.spawnBonusVehicle(kinds[Math.floor(this.encounterRand()*kinds.length)]);}
@@ -407,7 +407,7 @@ export class GameSimulation {
   if(feature==='badcop')this.spawnBonusVehicle('police');
   if(feature==='goodcop'){
    const exits=this.config.city==='sf'?[{x:52,z:-3,dx:0,dz:1},{x:-52,z:3,dx:0,dz:1},{x:3,z:52,dx:1,dz:0},{x:-3,z:-52,dx:1,dz:0}]:this.city.lanes.map(path=>{const a=path[path.length-2],b=path[path.length-1],d=Math.hypot(b.x-a.x,b.z-a.z)||1,dx=(b.x-a.x)/d,dz=(b.z-a.z)/d;return {x:b.x-dx*18,z:b.z-dz*18,dx:dz,dz:-dx};});const exit=exits[Math.floor(this.featureRand()*4)];
-   const cop=this.vehicle('police',exit.x,exit.z,exit.dx,exit.dz);cop.wrecked=true;cop.value=0;cop.body.setBodyType(RAPIER.RigidBodyType.Fixed,true);this.featureBlocks.add(cop.id);this.say('GOOD COPS · 一个出口暂时封锁');
+   const cop=this.vehicle('police',exit.x,exit.z,exit.dx,exit.dz);cop.wrecked=true;cop.value=0;cop.body.setBodyType(RAPIER.RigidBodyType.Fixed,true);this.featureBlocks.add(cop.id);this.say('好警察封住了一个出口');
   }
  }
  private processRoundActions(){
@@ -415,7 +415,7 @@ export class GameSimulation {
    if(action.kind==='draft'&&this.round.stage!=='finale'&&this.round.stage!=='inferno')this.openDraft('perk',this.draft.perkOptions());
    if(action.kind==='feature'){const feature=this.round.wave===2?'goodcop':'magnet';if(this.rewardActive&&this.round.featureTime>0)this.waveFeatures.push(feature);else this.activateFeature(feature,8);}
    if(action.kind==='pizza'&&!this.pizzaOnField)this.bonusNextIn=Math.min(this.bonusNextIn,Math.max(2.5,10-(this.age-this.lastPizzaAt)));
-   if(action.kind==='inferno'){this.superTriggered=true;this.emit('special',{x:0,y:1,z:0},2,`INFERNO! ×${this.round.infernoMultiplier}`,'super');this.say('INFERNO · 燃烧继续，逃脱决定最终倍率');}
+   if(action.kind==='inferno'){this.superTriggered=true;this.emit('special',{x:0,y:1,z:0},2,`INFERNO! ×${this.round.infernoMultiplier}`,'super');this.say('进入燃烧加时，逃脱数决定最终倍率');}
    if(action.kind==='finale'){
     this.waveFeatures=[];
     this.superTriggered=true;this.emit('special',{x:0,y:1,z:0},action.power,'SUPER FEATURE!','super');
@@ -426,7 +426,7 @@ export class GameSimulation {
     if(this.config.rules==='sandbox'&&action.outcome==='complete')this.superTriggered=true;
     if(this.config.rules==='pileup')this.scores.bonus('inferno-final',(this.scores.breakdown.traffic+this.scores.breakdown.property)*(this.round.infernoMultiplier-1));
     this.stats.finished=action.outcome==='complete';this.stats.escaped=this.round.escaped;this.checkContract();
-    this.phase='ended';this.slowMotion=false;this.emit('end',{x:0,y:0,z:0},1,action.outcome==='escaped'?'5 辆逃脱 · 下次再来！':action.outcome==='timeout'?'路口仍有车流未解决':'TOTAL DAMAGE!');
+    this.phase='ended';this.slowMotion=false;this.emit('end',{x:0,y:0,z:0},1,action.outcome==='escaped'?'5 辆车逃脱，挑战失败':action.outcome==='timeout'?'路口仍有车流未解决':'TOTAL DAMAGE!');
    }
   }
  }
@@ -476,7 +476,7 @@ export class GameSimulation {
    if(e.kind==='building')continue;
    const mass=e.mass;e.body.applyImpulse({x:direction.x*mass*force*18,y:mass*force*9,z:direction.z*mass*force*18},true);
    e.body.applyTorqueImpulse({x:mass*force*2*(this.physicsRand()-.5),y:mass*force*2,z:mass*force*2*(this.physicsRand()-.5)},true);
-   if(e.kind==='ute'&&!e.boosted){e.boosted=true;e.body.applyImpulse({x:e.direction.x*mass*26,y:mass*3,z:e.direction.z*mass*26},true);this.emit('special',q,1,'UTE · 爆破推进！',undefined,e.id);}
+   if(e.kind==='ute'&&!e.boosted){e.boosted=true;e.body.applyImpulse({x:e.direction.x*mass*26,y:mass*3,z:e.direction.z*mass*26},true);this.emit('special',q,1,'工程皮卡被爆破推进',undefined,e.id);}
   }
   if(vehiclesDestroyed>=3){const points=this.scores.bonus(`explosion-combo:${explosionId}`,vehiclesDestroyed*1500*this.chainBonus);this.emit('special',p,2,`EXPLOSION COMBO ×${vehiclesDestroyed} +$${points.toLocaleString()}`);if(directional)this.stats.comboBlasts++;if(vehiclesDestroyed>=5)this.emit('special',p,3,`MEGA BLAST ×${vehiclesDestroyed}`,'mega');}
  }
@@ -493,8 +493,8 @@ export class GameSimulation {
   const offer=this.draftOffer;if(!offer)return false;
   if(index<0){if(offer.kind==='perk')return false;this.draftOffer=null;return true;}
   const choice=offer.options[index];if(!choice)return false;this.draftOffer=null;const p=this.entities.get(this.playerId)?.body.translation()??{x:0,y:1,z:0};
-  if(offer.kind==='contract'){this.contractId=choice;const c=contractById(choice)!;this.emit('special',p,1,`合约 · ${c.name}`,'contract');this.say(`合约：${c.name} · ${c.description}`);return true;}
-  const id=choice as PerkId;this.draft.owned.push(id);this.emit('special',p,1.4,`强化 · ${PERKS[id].name}`,'perk');this.say(`强化：${PERKS[id].name} · ${PERKS[id].description}`);
+  if(offer.kind==='contract'){this.contractId=choice;const c=contractById(choice)!;this.emit('special',p,1,`已接合约 ${c.name}`,'contract');this.say(`合约 ${c.name}：${c.description}`);return true;}
+  const id=choice as PerkId;this.draft.owned.push(id);this.emit('special',p,1.4,`获得强化 ${PERKS[id].name}`,'perk');this.say(`强化 ${PERKS[id].name}：${PERKS[id].description}`);
   if(id==='brake'){this.round.escaped=Math.max(0,this.round.escaped-1);this.round.infernoMultiplier=Math.max(1,5-this.round.escaped);this.blastCharge=Math.min(1,this.blastCharge+.25);}
   if(id==='pizza')this.bonusNextIn=Math.min(this.bonusNextIn,3);
   return true;
@@ -506,7 +506,7 @@ export class GameSimulation {
  private checkContract(){
   const c=this.contractId?contractById(this.contractId):undefined;if(!c||this.contractDone||c.metric(this.stats)<c.target)return;
   this.contractDone=true;const points=this.scores.bonus(`contract:${c.id}`,c.reward);
-  this.emit('special',this.entities.get(this.playerId)?.body.translation()??{x:0,y:1,z:0},2,`合约完成 · ${c.name} +$${points.toLocaleString()}`,'contract');
+  this.emit('special',this.entities.get(this.playerId)?.body.translation()??{x:0,y:1,z:0},2,`合约完成 ${c.name} +$${points.toLocaleString()}`,'contract');
  }
  private checkMilestone(p:Vec3){
   const marks=[8,16,25,40],names=['NICE CHAIN!','GREAT CHAIN!','MEGA CRASH!','TOTAL CARNAGE!'];

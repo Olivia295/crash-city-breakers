@@ -156,7 +156,7 @@ describe('reference-based awards',()=>{
   expect(starsFor(score,'roadtrip',true,true)).toBe(5);
   expect(runChallenges(0,'roadtrip',true,true)).toEqual([false,false,false,true,true]);
   expect(challengeLabels(DEFAULT_CONFIG)).toHaveLength(5);
-  expect(challengeLabels(DEFAULT_CONFIG)[4]).toContain('本地挑战');
+  expect(challengeLabels(DEFAULT_CONFIG)[4]).toContain('建筑');
  });
  it('accounts for every building damage stage once without multiplying new-target combo',()=>{
   const score=new ScoreKeeper();score.reward(10,'hit',10000,'building');

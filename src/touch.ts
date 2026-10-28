@@ -19,7 +19,7 @@ const DEADZONE=.16;
 export function createTouchStick(parent:HTMLElement):TouchStick {
   const root=document.createElement('div');
   root.className='touch-stick';root.hidden=true;root.setAttribute('aria-label','虚拟摇杆');
-  root.innerHTML='<div class="touch-stick-base"><div class="touch-stick-knob"></div></div><span class="touch-stick-label">转向 / 空中调整</span>';
+  root.innerHTML='<div class="touch-stick-base"><div class="touch-stick-knob"></div></div>';
   parent.append(root);
   const base=root.querySelector<HTMLElement>('.touch-stick-base')!,knob=root.querySelector<HTMLElement>('.touch-stick-knob')!;
   const state={x:0,z:0,held:false};let pointerId=-1;

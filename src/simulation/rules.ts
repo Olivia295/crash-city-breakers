@@ -6,7 +6,7 @@ export const STAR_THRESHOLDS:Record<GameRules,readonly number[]>={
 export function runChallenges(score:number,rules:GameRules='roadtrip',superTriggered=false,localChallenge=false){return [...STAR_THRESHOLDS[rules].map(value=>score>=value),superTriggered,localChallenge];}
 export function starsFor(score:number,rules:GameRules='roadtrip',superTriggered=false,localChallenge=false){return runChallenges(score,rules,superTriggered,localChallenge).filter(Boolean).length;}
 export function starProgressFor(score:number,rules:GameRules='roadtrip'){const thresholds=STAR_THRESHOLDS[rules],stars=thresholds.filter(value=>score>=value).length;return stars>=3?1:clamp((score-(thresholds[stars-1]||0))/(thresholds[stars]-(thresholds[stars-1]||0)),0,1);}
-export function challengeLabels(config:RunConfig){return [...STAR_THRESHOLDS[config.rules||'roadtrip'].map(value=>`达到 $${value.toLocaleString()}`),config.rules==='sandbox'?'完整完成一局':'触发终局事件','本地挑战：建筑坍塌或收集钱袋'];}
+export function challengeLabels(config:RunConfig){return [...STAR_THRESHOLDS[config.rules||'roadtrip'].map(value=>`达到 $${value.toLocaleString()}`),config.rules==='sandbox'?'完整打完一局':'触发终局事件','一座建筑坍塌，或收集钱袋'];}
 export class ScoreKeeper {
  score=0;combo=0;bestCombo=0;comboTime=0;crashes=0;destroyed=0;multiplier=1;
  breakdown:ScoreBreakdown={traffic:0,property:0,bonus:0};

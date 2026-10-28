@@ -43,7 +43,9 @@ export class GameAudio {
   private menuWanted = false;
   private menuStopTimer?: ReturnType<typeof setTimeout>;
   private visibilityBound = false;
-  private settings: Settings = { volume: 0.65, music: 0.3, shake: true, quality: 'high', language: 'zh' };
+  /** Background music is off when the switch is off or the volume is zero. */
+  private get musicLevel(): number { return this.settings.bgm === false ? 0 : this.settings.music; }
+  private settings: Settings = { volume: 0.65, music: 0.3, bgm: true, shake: true, quality: 'high', language: 'zh' };
 
   constructor() {}
 
@@ -114,8 +116,8 @@ export class GameAudio {
   private syncMenuMusic(time: number): void {
     const context = this.context, gain = this.menuGain;
     if (!context || !gain) return;
-    const want = this.menuWanted && this.settings.music > 0 && this.phase !== 'running' && this.phase !== 'paused';
-    const level = want ? Math.min(0.9, clamp(this.settings.music) / 0.3 * 0.5) : 0;
+    const want = this.menuWanted && this.musicLevel > 0 && this.phase !== 'running' && this.phase !== 'paused';
+    const level = want ? Math.min(0.9, clamp(this.musicLevel) / 0.3 * 0.5) : 0;
     gain.gain.setTargetAtTime(level, time, want ? 0.35 : 0.2);
     if (want) {
       if (this.menuStopTimer) { clearTimeout(this.menuStopTimer); this.menuStopTimer = undefined; }
@@ -289,7 +291,7 @@ export class GameAudio {
     const ending = this.phase === 'ended' && (this.active || time < this.endTailUntil);
     const audible = playing || ending;
     this.effects.gain.setTargetAtTime(clamp(this.settings.volume) * 0.75, time, 0.025);
-    this.music.gain.setTargetAtTime(playing ? clamp(this.settings.music) * 0.4 : 0, time, 0.07);
+    this.music.gain.setTargetAtTime(playing ? clamp(this.musicLevel) * 0.4 : 0, time, 0.07);
     this.gate.gain.setTargetAtTime(audible ? 0.85 : 0, time, 0.035);
     this.syncMenuMusic(time);
   }
@@ -430,7 +432,7 @@ export class GameAudio {
   private scheduleMusic(): void {
     const context = this.context;
     if (!context || !this.music || context.state !== 'running' || !this.active ||
-      this.phase !== 'running' || this.settings.music <= 0) {
+      this.phase !== 'running' || this.musicLevel <= 0) {
       this.nextBeat = 0;
       return;
     }

@@ -156,3 +156,36 @@ html.is-touch .hud-notice{max-width:46vw}
 .sticky-start .button{min-height:48px;padding:0 26px;font-size:16px}
 .sticky-start .button-primary{flex:1;max-width:360px}
 @media(max-width:900px),(pointer:coarse),(max-height:700px){.sticky-start{display:flex}}
+
+/* v0.7: simplified surfaces. */
+.daily-body strong{display:flex;flex-wrap:wrap;gap:4px 14px}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:26px 32px}
+.guide-grid h3{margin:0 0 10px;font:900 15px var(--font-ui);color:var(--gold)}
+.guide-grid section h3:not(:first-child){margin-top:20px}
+.guide-grid p{margin:0;font-size:13px;line-height:1.7;color:#ccd5e2}
+.guide-controls{display:grid;grid-template-columns:max-content 1fr;gap:9px 16px;margin:0}
+.guide-controls dt{justify-self:start;padding:3px 9px;background:#10161f;border:1px solid #455166;font:800 12px Arial,sans-serif;color:#fff}
+.guide-controls dd{margin:0;align-self:center;font-size:13px;color:#ccd5e2}
+.guide-stars{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.guide-stars li{display:flex;gap:10px;font-size:13px;line-height:1.5;color:#e8edf4}.guide-stars b{color:var(--gold)}
+.result-heading h2.is-failed{color:#ff9a8a}
+.result-heading p{margin:6px 0 0;color:#b4c0cf;font-size:14px}
+.dialog-card>header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.dialog-card>header h2{margin:0}
+
+html.is-touch .blast-meter kbd{display:none}
+/* Phone in landscape: the garage must show the start button without scrolling. */
+@media(max-height:480px){
+  .menu-layout{padding:8px 18px 4px;gap:8px}
+  .menu-header{min-height:0;align-items:center;gap:12px}
+  .brand h1{font-size:50px;margin:0;letter-spacing:-3px}
+  .brand-subtitle{margin:2px 0 0;font-size:11px}
+  .menu-header-right{align-items:flex-end;gap:4px}
+  .menu-header-right .garage-footer{display:flex;flex-direction:row;transform:none}
+  .menu-header-right .garage-footer button{padding:6px 12px;font-size:12px;white-space:nowrap}
+  .menu-header-right .garage-footer button+button{border-top:0;border-left:1px solid #3d4757}
+  .city-section-heading{display:none}
+  .city-choice{min-height:78px}
+  .rule-choice{min-height:44px;padding-block:6px}
+  .sound-hint{margin-top:0}
+}

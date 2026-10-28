@@ -101,7 +101,7 @@ describe('distinct player decisions',()=>{
 
 describe('traffic payloads and local disaster triggers',()=>{
  it('rolls a double decker sideways on the first impact only',()=>{
-  const game=make({city:'london'});game.start();isolate(game);const bus=isolatedVehicle(game,'doubledecker');internals(game).hit(bus,10);expect(Math.abs(bus.body.angvel().z)).toBeGreaterThan(2);expect(Math.abs(bus.body.linvel().x)).toBeGreaterThan(4);internals(game).hit(bus,10);expect(game.snapshot().events.filter(e=>e.text?.includes('双层横封'))).toHaveLength(1);
+  const game=make({city:'london'});game.start();isolate(game);const bus=isolatedVehicle(game,'doubledecker');internals(game).hit(bus,10);expect(Math.abs(bus.body.angvel().z)).toBeGreaterThan(2);expect(Math.abs(bus.body.linvel().x)).toBeGreaterThan(4);internals(game).hit(bus,10);expect(game.snapshot().events.filter(e=>e.text?.includes('横封车道'))).toHaveLength(1);
  });
  it('detaches two independently physical road-train trailers without increasing the finite arrival count',()=>{
   const game=make({city:'sydney',rules:'roadtrip'});game.start();const train=[...game.entities.values()].find(e=>e.kind==='roadtrain')!;const arrivals=game.round.spawned;internals(game).hit(train,15);const trailers=[...game.entities.values()].filter(e=>e.kind==='trailer');expect(trailers).toHaveLength(2);expect(trailers.every(e=>e.body.isDynamic()&&e.scale!.z>5)).toBe(true);expect(train.collider.halfExtents().z).toBeLessThan(VEHICLES.roadtrain.length/2);internals(game).hit(train,15);expect([...game.entities.values()].filter(e=>e.kind==='trailer')).toHaveLength(2);expect(game.round.spawned).toBe(arrivals);

@@ -1,23 +1,23 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="CRASH! 城市连锁 图标" width="96">
+<img src="public/favicon.svg" alt="CRASH!城市破坏者 图标" width="96">
 
-# CRASH! 城市连锁
+# CRASH!城市破坏者
 
 **一款浏览器街机游戏：冲进路口，把自己炸飞，再操控残骸去引发更大的连锁事故。**
 
 灵感来自 *Burnout CRASH!*，用 Three.js 与 Rapier 物理从零重做。三座城市、23 种车型、四种规则、波间强化、合约与每日挑战。
 
-[**▶ 在线试玩**](https://crash-city-breakers.vercel.app) · [特色](#特色) · [运行原理](#运行原理) · [开始游玩](#开始游玩) · [本地开发](#本地开发)
+[**▶ 在线试玩**](https://crash-city-breakers.vercel.app) | [特色](#特色) | [运行原理](#运行原理) | [开始游玩](#开始游玩) | [本地开发](#本地开发)
 
-[English](README.md) · **简体中文**
+[English](README.md) | **简体中文**
 
 ![Node 22+](https://img.shields.io/badge/node-22%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-0.180-000000?logo=three.js&logoColor=white)
 ![Rapier](https://img.shields.io/badge/Rapier-0.19-E05D44)
 ![Tests](https://img.shields.io/badge/tests-116%20passing-2ea44f)
-![Version](https://img.shields.io/badge/version-0.5.0-ffd24a)
+![Version](https://img.shields.io/badge/version-0.7.0-ffd24a)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue)
 
 </div>
@@ -76,7 +76,7 @@
 
 ### 为手机打造
 
-横屏触屏操作（左手摇杆，右手爆破键和技能），HUD 避开安全区，菜单底部常驻「开始连锁」按钮，还有从第一次轻点就响起的**标题音乐**：126 BPM、E Mixolydian 的 16 小节无缝循环，取 Burnout CRASH! 那种 80 年代新浪潮游戏秀的神气，但完全原创。它由 [claude-code-music](https://github.com/yiqiao-yin/claude-code-music) 框架用算术合成，没有采样，没有录音。
+横屏触屏操作（左手摇杆，右手爆破键和技能），HUD 避开安全区，菜单底部常驻「开始游戏」按钮，还有从第一次轻点就响起的**标题音乐**：126 BPM、E Mixolydian 的 16 小节无缝循环，取 Burnout CRASH! 那种 80 年代新浪潮游戏秀的神气，但完全原创。它由 [claude-code-music](https://github.com/yiqiao-yin/claude-code-music) 框架用算术合成，没有采样，没有录音。
 
 `main` 分支是普通网页版；`toy-edition` 分支在此基础上接入 B站 Toy SDK：排行榜、云存档和可存进相册的成绩图。
 
@@ -87,12 +87,12 @@
 ```mermaid
 flowchart LR
     Input[键盘 / 鼠标] --> Main[main.ts<br>帧循环]
-    Main -->|dt, input| Sim[GameSimulation<br>Rapier 世界 · 规则 · 强化]
-    Sim -->|snapshot| Renderer[GameRenderer<br>Three.js 场景 · 粒子]
-    Sim -->|snapshot| UI[GameUI<br>DOM HUD · 菜单]
+    Main -->|dt, input| Sim[GameSimulation<br>Rapier 世界，规则，强化]
+    Sim -->|snapshot| Renderer[GameRenderer<br>Three.js 场景，粒子]
+    Sim -->|snapshot| UI[GameUI<br>DOM HUD，菜单]
     Sim -->|snapshot| Audio[GameAudio<br>Web Audio 合成]
-    Sim --- Round[RoundProgress<br>波次 · 终局 · 抽取时机]
-    Sim --- Perks[perks.ts<br>强化 · 合约 · 每日]
+    Sim --- Round[RoundProgress<br>波次，终局，抽取时机]
+    Sim --- Perks[perks.ts<br>强化，合约，每日]
 ```
 
 模拟层持有全部状态，以固定 60 Hz 推进 Rapier。每帧发布一份不可变的**快照**，渲染器、HUD 和音频只读取它。随机数拆成多条种子流（车流、物理散落、奖励、抽取、修饰词），因此一个种子对应一局可复现的游戏，脚本化测试也永远不会弹出抽取面板。
@@ -138,7 +138,7 @@ scripts/                    资源构建 + Playwright 浏览器检查
 | `W A S D` / 方向键 | 入场转向；爆破后调整残骸落点 |
 | 鼠标 + `Space` | 瞄准并在能量槽满时引爆 Crashbreaker |
 | `Q` | 车辆技能（需要冷却结束并有足够能量） |
-| `1` `2` `3` | 选择强化或合约 · `4` 跳过合约 |
+| `1` `2` `3` | 选择强化或合约，`4` 跳过合约 |
 | `Esc` / `R` | 暂停 / 按同样配置重开 |
 | `E` + `1`–`3` | 仅 Sandbox：慢动作机关选择 |
 
@@ -156,7 +156,7 @@ npm run dev
 打开 <http://127.0.0.1:5173/>，应该能看到默认选中旧金山的车库界面。
 
 > [!TIP]
-> macOS 上可以不开终端：双击项目文件夹里的 **`开始游戏.command`**。它会自动安装、构建并打开游戏；关闭窗口即停止。
+> 不想敲命令：macOS 双击 **`start.command`**，其他系统运行 **`./start.sh`**。它会自动安装依赖、构建并在浏览器打开游戏，按 Ctrl+C 或关闭窗口即停止。`./start.sh --dev` 是开发模式，`--no-open` 只启动服务。
 
 <br>
 
