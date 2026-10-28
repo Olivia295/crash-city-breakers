@@ -112,3 +112,47 @@
 @media(max-width:900px){.contract-card{top:auto;bottom:150px;width:200px}.perk-row{top:auto;bottom:150px}}
 @media(prefers-reduced-motion:reduce){.mega-callout.is-hit,.contract-card.is-done{animation:none}}
 .chain-mult{font:900 11px Arial,sans-serif;color:#1b1204;background:var(--gold);padding:2px 6px;transform:skewX(-10deg);letter-spacing:.3px}.chain-mult.is-hot{background:#ff7a3d;color:#fff;box-shadow:0 0 10px #ff7a3d99}
+
+/* v0.6: phone controls, safe areas, title-screen hint. */
+.game-hud{inset:max(env(safe-area-inset-top),var(--safe-top,0px)) max(env(safe-area-inset-right),var(--safe-right,0px)) max(env(safe-area-inset-bottom),var(--safe-bottom,0px)) max(env(safe-area-inset-left),var(--safe-left,0px))}
+.sound-hint{display:inline-block;margin-top:6px;padding:4px 10px;border:1px solid #ffd24a88;color:var(--gold);font:800 11px var(--font-ui);letter-spacing:.8px;animation:sound-blink 1.6s ease-in-out infinite}
+.sound-hint[hidden]{display:none}
+@keyframes sound-blink{0%,100%{opacity:1}50%{opacity:.45}}
+.touch-stick{position:fixed;left:max(22px,var(--safe-left,0px),env(safe-area-inset-left));bottom:max(22px,var(--safe-bottom,0px),env(safe-area-inset-bottom));width:170px;height:170px;pointer-events:auto;touch-action:none;z-index:12;user-select:none;-webkit-user-select:none}
+.touch-stick[hidden]{display:none}
+.touch-stick-base{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%,#2a3442cc,#0b1017cc);border:2px solid #ffffff44;box-shadow:inset 0 0 22px #00000099,0 4px 0 #02060b88}
+.touch-stick-knob{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe08a,#e29b1a);border:2px solid #fff4;box-shadow:0 5px 12px #0008;transition:transform .05s}
+.touch-stick.is-held .touch-stick-base{border-color:var(--gold)}
+.touch-stick-label{position:absolute;left:0;right:0;top:-22px;text-align:center;font:800 10px var(--font-ui);letter-spacing:1.4px;color:#cdd6e2;text-shadow:0 1px 3px #000}
+#rotate-hint{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#05080dee;color:#fff;text-align:center}
+#rotate-hint[hidden]{display:none}
+#rotate-hint span{display:block;font-size:64px;color:var(--gold);animation:rotate-nudge 1.6s ease-in-out infinite}
+#rotate-hint b{display:block;margin-top:8px;font:900 24px var(--font-ui)}#rotate-hint small{display:block;margin-top:8px;color:#9fb0c4;font-size:13px}
+@keyframes rotate-nudge{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
+
+/* Touch devices: thumbs live at the bottom corners, everything else stays out of the way. */
+html.is-touch .blast-cluster{left:auto;right:12px;bottom:12px;align-items:flex-end}
+html.is-touch .blast-cluster .aim-hint{display:none}
+html.is-touch .blast-meter{min-width:200px;min-height:60px}
+html.is-touch .ability-cluster{left:auto;right:12px;bottom:92px}
+html.is-touch .ability-trigger{min-height:56px;min-width:150px}
+html.is-touch .pause-button{min-width:48px;min-height:48px}
+html.is-touch .draft-card{min-height:150px}
+html.is-touch .city-event-hud{display:none}
+html.is-touch .perk-row{top:auto;bottom:12px;left:auto;right:230px;max-width:200px}
+html.is-touch .mutator-tag{top:8px}
+@media(pointer:coarse) and (max-height:480px){
+  .contract-card{top:auto;bottom:164px;right:12px;width:190px;padding:7px 10px}.contract-card p{display:none}
+  .draft-panel{gap:8px}.draft-heading h3{font-size:16px}.draft-card{width:min(200px,28vw);min-height:120px;padding:12px 12px 10px}.draft-card strong{font-size:16px}.draft-card span{font-size:11px}.draft-card .glyph{width:28px;height:28px}
+  .mega-callout{top:14%}
+  .menu-layout{padding-top:10px}
+}
+html.is-touch .pause-button{left:50%;right:auto;top:6px;bottom:auto;transform:translateX(-50%);width:54px;height:40px;flex-direction:row;gap:6px}
+html.is-touch .pause-button kbd{display:none}
+html.is-touch .blast-cluster{width:min(260px,34vw)}
+html.is-touch .hud-notice{max-width:46vw}
+
+.sticky-start{display:none;position:sticky;bottom:0;z-index:5;gap:10px;padding:10px max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:linear-gradient(0deg,#0b1017f2 60%,#0b101700);justify-content:center}
+.sticky-start .button{min-height:48px;padding:0 26px;font-size:16px}
+.sticky-start .button-primary{flex:1;max-width:360px}
+@media(max-width:900px),(pointer:coarse),(max-height:700px){.sticky-start{display:flex}}

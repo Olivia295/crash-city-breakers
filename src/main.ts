@@ -7,6 +7,7 @@ import {DEFAULT_CONFIG,DEFAULT_SETTINGS,VEHICLES,RULE_VERSION,type RunConfig,typ
 import {PAINTS,dailyKey,dailySetup,dailyStreak} from './simulation/perks';
 import {cityRoutes,getCity,cityGroundHeight} from './cities';
 import {translate} from './i18n';
+import {isTouchDevice,createTouchStick} from './touch';
 
 const STORAGE='crash-city:world-tour-v3';
 const DEFAULT_PROFILE:Profile={stars:0,paint:'stock',best:{}};
@@ -18,6 +19,7 @@ if(!PAINTS.find(p=>p.id===profile.paint&&p.stars<=profile.stars))profile.paint='
 let config:RunConfig={...DEFAULT_CONFIG};let game:GameSimulation;let renderer:GameRenderer;const audio=new GameAudio();
 let ready=false;let showingResult=false;let endedAt=0;let result:RunResult|undefined;let duel:{base:RunConfig;first?:RunResult;round:1|2}|undefined;
 let last=performance.now();const held=new Set<string>();let pointer={x:0,y:0,z:1};let pointerMoved=false;let requestBlast=false;let requestAbility=false;
+const touchMode=isTouchDevice();let stick:ReturnType<typeof createTouchStick>|undefined;let portrait=false;
 let lastSnapshot:GameSnapshot|undefined;let latestFPS=60;let frameCount=0;let frameTime=0;
 const worldElement=document.querySelector<HTMLElement>('#world')!;const uiElement=document.querySelector<HTMLElement>('#ui')!;
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify({records,settings,profile}));}catch{ui.toast('本机存储不可用；本次游戏仍可正常进行');}}
@@ -25,7 +27,8 @@ function dailyInfo(){const date=dailyKey(),setup=dailySetup(date),mine=records.f
 function freshSeed(){return crypto.getRandomValues(new Uint32Array(1))[0];}
 function reset(next:RunConfig,start:boolean){
  game?.dispose();next={...next,paint:profile.paint};game=new GameSimulation(next);game.draftMode='manual';config={...next};held.clear();requestBlast=false;requestAbility=false;showingResult=false;endedAt=0;result=undefined;pointerMoved=false;renderer.setOverview(next.route,next.city);audio.resetRun();ui.resetRun();
- audio.setActive(false);if(start){game.start();game.offerContracts();audio.setActive(true);ui.hideOverlays();}last=performance.now();
+ audio.setActive(false);audio.setMenuMusic(!start);stick?.setVisible(false);
+ if(start){game.start();game.offerContracts();audio.setActive(true);ui.hideOverlays();stick?.setVisible(true);}last=performance.now();
 }
 function enterMenu(){audio.setActive(false);duel=undefined;config={...config,daily:undefined,mutator:undefined};uiElement.dataset.challengeRound='1';reset({...config,mode:'solo',seed:freshSeed()},false);ui.showMenu(config,records,settings,profile,dailyInfo());}
 function start(next:RunConfig,keepSeed=false){
@@ -36,11 +39,11 @@ function start(next:RunConfig,keepSeed=false){
  else {duel=undefined;next={...next,seed:keepSeed?next.seed:freshSeed()};}
  reset(next,true);
 }
-function pause(){if(game?.phase!=='running')return;game.pause();held.clear();audio.setActive(false);ui.showPause(settings);}
-function resume(){if(game?.phase!=='paused')return;void audio.unlock();game.resume();audio.setActive(true);ui.hideOverlays();last=performance.now();}
+function pause(){if(game?.phase!=='running')return;game.pause();held.clear();audio.setActive(false);stick?.setVisible(false);ui.showPause(settings);}
+function resume(){if(game?.phase!=='paused')return;void audio.unlock();game.resume();audio.setActive(true);ui.hideOverlays();stick?.setVisible(true);last=performance.now();}
 function finishRun(finished:RunResult){
  const before=profile.stars,gained=(finished.stars??0)+(finished.contract?.done?1:0);profile={...profile,stars:before+gained};
- const unlocked=PAINTS.filter(p=>p.stars>before&&p.stars<=profile.stars);save();
+ const unlocked=PAINTS.filter(p=>p.stars>before&&p.stars<=profile.stars);save();audio.setMenuMusic(true);stick?.setVisible(false);
  const daily=finished.config.daily?{date:finished.config.daily,...dailyInfo()}:undefined;
  ui.showResults(finished,duel?.round===2?duel.first:undefined,{gained,total:profile.stars,unlocked:unlocked.map(p=>p.id),dailyBest:daily?.best,streak:daily?.streak});
 }
@@ -56,7 +59,8 @@ async function share(){
   c.fillStyle='#83d4c4';c.font='24px sans-serif';c.fillText(translate(`${getCity(result.config.city).name} · ${cityRoutes(result.config.city).find(r=>r.id===result!.config.route)!.short}  /  ${VEHICLES[result.config.car].name}`,settings.language),68,790);
   c.fillStyle='#ccd3c8';c.font='21px sans-serif';c.fillText(translate(`最高连锁 ${result.bestCombo}   ·   命中 ${result.crashes}   ·   摧毁 ${result.destroyed}`,settings.language),68,833);
   c.font='14px monospace';c.fillStyle='#8faaa8';c.fillText(`${RULE_VERSION} / ${result.config.blast} / ${result.config.passive} / CHALLENGE ${result.config.seed}`,68,868);
-  const a=document.createElement('a');a.download=`CRASH-${result.score}-${result.config.seed}.png`;a.href=canvas.toDataURL('image/png');a.click();ui.toast('成绩图已导出，可以分享给朋友');
+  const dataUrl=canvas.toDataURL('image/jpeg',.9);
+  const a=document.createElement('a');a.download=`CRASH-${result.score}-${result.config.seed}.jpg`;a.href=dataUrl;a.click();ui.toast('成绩图已导出，可以分享给朋友');
  }catch{ui.toast('成绩图暂时无法导出，请重试');}
 }
 const ui=new GameUI(uiElement,{
@@ -69,7 +73,8 @@ const ui=new GameUI(uiElement,{
 ui.setSettings(settings);
 ui.showLoading('正在装载城市、车辆与碰撞引擎…');
 
-window.addEventListener('pointermove',e=>{if(!renderer||!game)return;const p=renderer.worldFromPointer(e.clientX,e.clientY);pointer=p;pointerMoved=true;});
+window.addEventListener('pointermove',e=>{if(!renderer||!game)return;if(e.pointerType==='touch'&&!worldElement.contains(e.target as Node))return;const p=renderer.worldFromPointer(e.clientX,e.clientY);pointer=p;pointerMoved=true;});
+worldElement.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||!renderer||!game)return;pointer=renderer.worldFromPointer(e.clientX,e.clientY);pointerMoved=true;});
 window.addEventListener('keydown',e=>{
  const editing=e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement;if(editing)return;
  if(e.code==='Escape'){if(game?.phase==='running')pause();else if(game?.phase==='paused')resume();return;}
@@ -85,8 +90,21 @@ window.addEventListener('keyup',e=>held.delete(e.code));
 window.addEventListener('blur',()=>{held.clear();if(game?.phase==='running')pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&game?.phase==='running')pause();});
 worldElement.addEventListener('webglcontextlost',()=>{if(game?.phase==='running')pause();ui.toast('画面正在恢复，游戏已为你暂停');},true);
-window.addEventListener('resize',()=>renderer?.resize());
 
+/** Browsers keep audio locked until a gesture: unlock on the first tap and let the menu say so. */
+for(const type of ['pointerup','click','keydown','touchend'] as const){
+ const unlock=()=>{void audio.unlock().then(()=>{ui.setAudioReady(audio.running);if(audio.running)for(const t of ['pointerup','click','keydown','touchend'] as const)window.removeEventListener(t,unlock);});};
+ window.addEventListener(type,unlock);
+}
+const rotateHint=document.createElement('div');rotateHint.id='rotate-hint';rotateHint.hidden=true;
+rotateHint.innerHTML='<div><span aria-hidden="true">↻</span><b>请横屏游玩</b><small>把手机转到横向，路口看得更全，操作更顺手</small></div>';document.body.append(rotateHint);
+function syncOrientation(){
+ const inRound=game?.phase==='running'||game?.phase==='paused';
+ rotateHint.hidden=!(touchMode&&portrait&&inRound);
+ if(touchMode&&portrait&&game?.phase==='running')pause();
+}
+function applyOrientation(){portrait=window.innerHeight>window.innerWidth;syncOrientation();renderer?.resize();}
+window.addEventListener('resize',applyOrientation);
 let hitStop=0,slowTime=0,lastEvent=0;
 /** Short freeze-frames and slow-motion make big chains land; both stand down when screen effects are off. */
 function juice(snapshot:GameSnapshot){
@@ -102,12 +120,13 @@ function frame(now:number){
  frameTime+=dt;frameCount++;if(frameTime>=.7){latestFPS=frameCount/frameTime;frameTime=0;frameCount=0;}
  let x=Number(held.has('KeyD')||held.has('ArrowRight'))-Number(held.has('KeyA')||held.has('ArrowLeft'));
  let z=Number(held.has('KeyS')||held.has('ArrowDown'))-Number(held.has('KeyW')||held.has('ArrowUp'));
+ if(stick?.held){x=stick.axis.x;z=stick.axis.z;pointerMoved=false;}
  const n=Math.hypot(x,z);if(n){x/=n;z/=n;}
  const hero=game.entities.get(game.playerId)?.body.translation();let aim=game.aim;
  if(pointerMoved&&hero){aim={x:pointer.x-hero.x,y:0,z:pointer.z-hero.z};}else if(n)aim={x,y:0,z};
  const input:GameInput={x,z,aim,blast:requestBlast,ability:requestAbility};requestBlast=false;requestAbility=false;
  let scale=1;if(hitStop>0){scale=.05;hitStop-=dt;}else if(slowTime>0){scale=.38;slowTime-=dt;}
- game.update(dt*scale,input);const snapshot=game.snapshot();juice(snapshot);snapshot.fps=latestFPS;lastSnapshot=snapshot;
+ game.update(dt*scale,input);const snapshot=game.snapshot();juice(snapshot);stick?.setVisible(game.phase==='running'&&!snapshot.draft);snapshot.fps=latestFPS;lastSnapshot=snapshot;
  renderer.render(snapshot,dt,settings);audio.update(snapshot,settings);ui.update(snapshot);
  if(game.phase==='ended'&&!showingResult){
   if(!endedAt)endedAt=now;
@@ -118,10 +137,12 @@ function frame(now:number){
 
 async function boot(){
  try{
+  if(touchMode){document.documentElement.classList.add('is-touch');stick=createTouchStick(uiElement);if(settings.quality==='high'&&!localStorage.getItem(STORAGE)){settings={...settings,quality:'low'};ui.setSettings(settings);}}
   renderer=new GameRenderer(worldElement);await Promise.all([GameSimulation.init(),renderer.init()]);reset(config,false);ready=true;ui.showMenu(config,records,settings,profile,dailyInfo());requestAnimationFrame(frame);
+  applyOrientation();
   // Read-only diagnostics plus explicit dev controls for repeatable playtesting. Absent from production builds.
   if(import.meta.env.DEV)(window as any).__CRASH__={
-   snapshot:()=>game.snapshot(),stats:()=>({...renderer.getStats(),fps:latestFPS}),
+   audio:()=>audio.debugMenu(),touch:()=>({held:stick?.held,axis:stick?.axis}),snapshot:()=>game.snapshot(),stats:()=>({...renderer.getStats(),fps:latestFPS}),
    start:(partial:Partial<RunConfig>={})=>{start({...DEFAULT_CONFIG,...partial},partial.seed!==undefined);game.draftMode='auto';game.pickDraft(-1);},
    pick:(index:number)=>game.pickDraft(index),perk:(id:string)=>game.perk(id as never),combo:(count:number)=>{game.scores.combo=count;},
    blast:()=>game.blast(),ability:()=>game.activateAbility(),mechanism:(id:Parameters<GameSimulation['useMechanism']>[0])=>game.useMechanism(id),

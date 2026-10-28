@@ -74,6 +74,12 @@ A 70 ms hit-stop on every Crashbreaker. At chain ×8 / ×16 / ×25 / ×40 the ga
 
 <img src="docs/assets/results.png" alt="Results sheet: total damage, three damage accounts, stars gained, contract outcome, daily best and a paint unlock" width="100%">
 
+### Built for phones
+
+Landscape touch controls (a thumb-stick on the left, Crashbreaker and the ability on the right), a safe-area aware HUD, a sticky **Start** bar on the menu, and a **title-screen theme** you hear from the first tap: a seamless 16-bar loop in E Mixolydian at 126 BPM, in the spirit of Burnout CRASH!'s 80s new-wave game-show soundtrack, but original. It is synthesised from arithmetic with the [claude-code-music](https://github.com/yiqiao-yin/claude-code-music) framework, with no samples and no recordings.
+
+This `main` branch is the plain web edition. The `toy-edition` branch adds the B站 Toy SDK: leaderboards, a cloud save and an album-ready score card.
+
 <br>
 
 ## How it works

@@ -6,3 +6,4 @@ playwright-report/
 artifacts/
 docs/assets/*.tmp
 .vercel
+*.zip

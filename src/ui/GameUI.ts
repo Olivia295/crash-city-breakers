@@ -106,6 +106,7 @@ export class GameUI {
   private daily?:DailyInfo;
   private draftId=0;
   private megaUntil=0;
+  private audioReady=false;
   private lastToast='';
   private pizzaWinningTime=0;
   private pauseStarted=0;
@@ -171,7 +172,7 @@ export class GameUI {
     const locked=this.container.dataset.challengeRound==='2';
     this.overlay.hidden=false;
     this.overlay.innerHTML=`<section class="menu-screen" style="--city-color:${city.color}" aria-label="城市连锁车库"><div class="garage-stars" aria-hidden="true">★</div><div class="menu-layout">
-      <header class="menu-header"><div class="brand"><span class="eyebrow">WORLD TOUR / 03 CITIES</span><h1>CRASH<span>!</span></h1><div class="brand-subtitle">城 市 连 锁 <span>CREATE A CHAIN REACTION</span></div></div><div class="menu-header-right"><span class="edition">${locked?'PLAYER 02 / 条件已锁定':`${city.code} / ${city.englishName}`}</span><div class="garage-footer"><button type="button" data-action="guide">怎么玩</button><button type="button" data-action="vehicles">车流图鉴</button><button type="button" data-action="settings">设置</button><button type="button" class="language-toggle" data-action="language" aria-label="界面语言" data-language-name>${this.settings.language==='en'?'中文':'EN'}</button></div><span class="desktop-note">桌面键鼠 · 本地街机</span></div></header>
+      <header class="menu-header"><div class="brand"><span class="eyebrow">WORLD TOUR / 03 CITIES</span><h1>CRASH<span>!</span></h1><div class="brand-subtitle">城 市 连 锁 <span>CREATE A CHAIN REACTION</span></div></div><div class="menu-header-right"><span class="edition">${locked?'PLAYER 02 / 条件已锁定':`${city.code} / ${city.englishName}`}</span><div class="garage-footer"><button type="button" data-action="guide">怎么玩</button><button type="button" data-action="vehicles">车流图鉴</button><button type="button" data-action="settings">设置</button><button type="button" class="language-toggle" data-action="language" aria-label="界面语言" data-language-name>${this.settings.language==='en'?'中文':'EN'}</button></div><span class="desktop-note">桌面键鼠 · 手机触屏</span><span class="sound-hint" ${this.audioReady?'hidden':''}>♪ 轻点任意处，开启音乐</span></div></header>
       <section class="city-selection" aria-label="选择独立城市"><div class="city-section-heading"><b>01 / SELECT CITY <span>选择城市</span></b><span>${locked?'同机第二轮 · 城市已锁定':'三座城市 · 三种道路结构'}</span></div><div class="city-picker">${Object.values(CITIES).map(item=>`<button type="button" class="city-choice ${city.id===item.id?'is-selected':''}" data-config="city" data-value="${item.id}" style="--city-color:${item.color}" aria-pressed="${city.id===item.id}" ${locked?'disabled':''}><span class="city-card-copy"><small>${item.code} <i>${city.id===item.id?'● SELECTED':'○'}</i></small><strong>${item.name}<em>${item.englishName}</em></strong><span>${item.tagline}</span></span>${cityMap(item.id)}</button>`).join('')}</div></section>
       <nav class="rules-picker" aria-label="玩法规则">${(Object.keys(RULES) as RuleMode[]).map(id=>`<button type="button" data-config="rules" data-value="${id}" class="rule-choice ${rule===id?'is-selected':''}" aria-pressed="${rule===id}" ${locked?'disabled':''}><span>${RULES[id].name}</span><b>${RULES[id].zh}</b><small>${RULES[id].tag}</small></button>`).join('')}</nav>
       <div class="garage-main"><section class="vehicle-stage" aria-label="选择座驾"><div class="section-caption"><span><b>02 / SELECT VEHICLE</b> / 选择座驾</span><span>0${PLAYER_CARS.indexOf(this.config.car)+1} <i>/ 04</i></span></div><div class="vehicle-showcase"><div class="showcase-grid"></div><span class="showcase-index">0${PLAYER_CARS.indexOf(this.config.car)+1}</span><div class="vehicle-preview" role="img" aria-label="${car.name}，游戏内三维模型"></div><div class="vehicle-title"><span>${car.tag}</span><h2>${car.name}</h2></div><div class="car-attributes"><div class="power-stat"><span>CRASHBREAKER <b>POWER</b></span><div>${statArrows(stats.power)}</div></div><div class="aftertouch-stat"><span>AFTERTOUCH <b>CONTROL</b></span><div>${statArrows(stats.aftertouch)}</div></div></div></div>
@@ -180,7 +181,7 @@ export class GameUI {
       ${rule==='sandbox'?`<section class="loadout-section"><button type="button" class="loadout-toggle" data-action="loadout" aria-expanded="${this.loadoutOpen}" aria-controls="loadout-options"><span><b>配装车间</b></span><span>${BLAST_MODS.find(item=>item.id===this.config.blast)!.name} <i>${this.loadoutOpen?'−':'+'}</i></span></button><div id="loadout-options" class="loadout-options" ${this.loadoutOpen?'':'hidden'}><label>爆破改装<select data-config="blast" ${locked?'disabled':''}>${BLAST_MODS.map(item=>`<option value="${item.id}" ${this.config.blast===item.id?'selected':''}>${item.name} · ${item.description}</option>`).join('')}</select></label><label>被动配装<select data-config="passive" ${locked?'disabled':''}>${PASSIVE_MODS.map(item=>`<option value="${item.id}" ${this.config.passive===item.id?'selected':''}>${item.name} · ${item.description}</option>`).join('')}</select></label></div></section>`:''}
       <div class="launch-block"><button type="button" class="button button-primary launch-button" data-action="start">${this.config.mode==='versus'?locked?'玩家 2，出发！':'玩家 1，出发！':'开始连锁'} ${arrow}</button><p>${this.config.mode==='versus'?locked?'城市、车辆、规则与车流已锁定。选好路线，开始。':'同城 · 同车 · 同一车流，轮流较量':info.objective}</p></div>${locked?'':this.dailyCard()}</aside></div>
       <footer class="menu-footer"><span><b>LOCAL RECORD</b> <strong>${best?money(best):'$000,000,000'}</strong><small>${city.name} / 当前车辆 / 规则</small></span><span>${city.landmark} <i>◆</i> ${city.traffic}</span></footer>
-    </div></section>`;
+    </div><div class="sticky-start"><button type="button" class="button button-primary" data-action="start">${this.config.mode==='versus'?locked?'玩家 2，出发！':'玩家 1，出发！':'开始连锁'} ${arrow}</button>${!locked&&this.daily?'<button type="button" class="button button-outline" data-action="daily">今日挑战</button>':''}</div></section>`;
     this.localize(this.overlay);
     try{this.preview??=new CarPreview();this.preview.show(this.overlay.querySelector<HTMLElement>('.vehicle-preview')!,car.id,this.profile.paint);}
     catch(error){console.warn('Vehicle preview unavailable',error);this.overlay.querySelector('.vehicle-preview')!.innerHTML=carIcon(car.id,colorHex(car.color));}
@@ -362,13 +363,17 @@ export class GameUI {
     this.fields.mega.hidden=now>=this.megaUntil;
   }
   private megaSeen=new Set<number>();
+  setAudioReady(ready:boolean):void {
+    this.audioReady=ready;
+    this.container.querySelectorAll<HTMLElement>('.sound-hint').forEach(item=>{item.hidden=ready;});
+  }
   private renderDraft(draft:NonNullable<RuleSnapshot['draft']>):void {
     const contract=draft.kind==='contract';
     const cards=draft.options.map((id,i)=>{
       if(contract){const c=contractById(id)!;return `<button type="button" class="draft-card" style="--card:${c.color}" data-draft="${i}"><kbd>${i+1}</kbd><strong>${c.name}</strong><span>${c.description}</span><b>+${money(c.reward)}</b></button>`;}
       const perk=PERKS[id as PerkId];return `<button type="button" class="draft-card" style="--card:${perk.color}" data-draft="${i}"><kbd>${i+1}</kbd>${glyph(perk.icon,perk.color)}<strong>${perk.name}</strong><span>${perk.description}</span></button>`;
     }).join('');
-    this.fields.draft.innerHTML=`<div class="draft-heading"><span>${contract?'CONTRACT / 本局合约':'UPGRADE / 选择强化'}</span><h3>${contract?'接一份合约，完成后拿额外奖金':'波间补给：选一项强化，带进下一波'}</h3></div><div class="draft-cards">${cards}</div>${contract?'<button type="button" class="draft-skip" data-draft="-1"><kbd>4</kbd> 不接合约，直接出发</button>':'<small>时间已暂停 · 按数字键选择</small>'}`;
+    this.fields.draft.innerHTML=`<div class="draft-heading"><span>${contract?'CONTRACT / 本局合约':'UPGRADE / 选择强化'}</span><h3>${contract?'接一份合约，完成后拿额外奖金':'波间补给：选一项强化，带进下一波'}</h3></div><div class="draft-cards">${cards}</div>${contract?'<button type="button" class="draft-skip" data-draft="-1"><kbd>4</kbd> 不接合约，直接出发</button>':`<small>${document.documentElement.classList.contains('is-touch')?'时间已暂停 · 点一张卡牌选择':'时间已暂停 · 按数字键选择'}</small>`}`;
     this.localize(this.fields.draft);
   }
   private resultExtras(result:RunResult,extra?:ResultExtra):string {

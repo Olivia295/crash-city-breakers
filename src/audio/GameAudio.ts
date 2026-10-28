@@ -3,6 +3,7 @@ import type { GameEvent, GameSnapshot, Settings } from '../shared';
 type Voice = { source: AudioScheduledSourceNode; nodes: AudioNode[] };
 type AudioWindow = Window & { webkitAudioContext?: typeof AudioContext };
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+const MENU_LOOP_SEC = 1344000 / 44100;
 
 /** Original, synthesized arcade sound. No audio is loaded or started before a gesture. */
 export class GameAudio {
@@ -33,6 +34,15 @@ export class GameAudio {
   private lastLaunchEvent?: GameEvent;
   private checkActivation = false;
   private endTailUntil = 0;
+  // Title-screen theme: an exact 16-bar loop rendered by claude-code-music (crash_gameshow bundle).
+  private menuGain?: GainNode;
+  private menuSource?: AudioBufferSourceNode;
+  private menuBuffer?: AudioBuffer;
+  private menuLoading?: Promise<void>;
+  private menuProbe?: AnalyserNode;
+  private menuWanted = false;
+  private menuStopTimer?: ReturnType<typeof setTimeout>;
+  private visibilityBound = false;
   private settings: Settings = { volume: 0.65, music: 0.3, shake: true, quality: 'high', language: 'zh' };
 
   constructor() {}
@@ -55,9 +65,80 @@ export class GameAudio {
       }
       if (this.context.state === 'suspended') await this.context.resume();
       if (!this.scheduler) this.scheduler = setInterval(() => this.scheduleMusic(), 40);
+      if (!this.visibilityBound) {
+        this.visibilityBound = true;
+        document.addEventListener('visibilitychange', () => {
+          const context = this.context;
+          if (!context) return;
+          if (document.hidden) void context.suspend();
+          else void context.resume();
+        });
+      }
       this.applyLevels();
     } catch {
       // Private browsing, denied audio, and devices without an output stay playable.
+    }
+  }
+
+  get running(): boolean { return this.context?.state === 'running'; }
+
+  /** Dev diagnostics: is the title theme actually reaching the output? */
+  debugMenu(): { running: boolean; wanted: boolean; decoded: boolean; playing: boolean; gain: number; rms: number } {
+    let rms = 0;
+    if (this.context && this.menuGain) {
+      this.menuProbe ??= (() => { const node = this.context!.createAnalyser(); node.fftSize = 2048; this.menuGain!.connect(node); return node; })();
+      const data = new Float32Array(this.menuProbe.fftSize);
+      this.menuProbe.getFloatTimeDomainData(data);
+      rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length);
+    }
+    return { running: this.running, wanted: this.menuWanted, decoded: !!this.menuBuffer, playing: !!this.menuSource, gain: this.menuGain?.gain.value ?? 0, rms };
+  }
+
+  /** Ask for the title theme (menu, results). It starts as soon as audio is unlocked and decoded. */
+  setMenuMusic(on: boolean): void {
+    this.menuWanted = on;
+    this.applyLevels();
+  }
+
+  private loadMenuMusic(): void {
+    if (this.menuBuffer || this.menuLoading || !this.context) return;
+    const context = this.context;
+    this.menuLoading = fetch(`${import.meta.env.BASE_URL}audio/crash_gameshow.mp3`)
+      .then(response => response.arrayBuffer())
+      .then(data => context.decodeAudioData(data))
+      .then(buffer => { this.menuBuffer = buffer; })
+      .catch(() => { /* the game stays fully playable without the theme */ })
+      .finally(() => { this.menuLoading = undefined; this.applyLevels(); });
+  }
+
+  private syncMenuMusic(time: number): void {
+    const context = this.context, gain = this.menuGain;
+    if (!context || !gain) return;
+    const want = this.menuWanted && this.settings.music > 0 && this.phase !== 'running' && this.phase !== 'paused';
+    const level = want ? Math.min(0.9, clamp(this.settings.music) / 0.3 * 0.5) : 0;
+    gain.gain.setTargetAtTime(level, time, want ? 0.35 : 0.2);
+    if (want) {
+      if (this.menuStopTimer) { clearTimeout(this.menuStopTimer); this.menuStopTimer = undefined; }
+      if (!this.menuBuffer) { this.loadMenuMusic(); return; }
+      if (!this.menuSource) {
+        const source = context.createBufferSource();
+        source.buffer = this.menuBuffer;
+        source.loop = true;
+        source.loopStart = 0;
+        // Encoders pad the tail; the loop is exactly 1,344,000 samples at 44.1 kHz.
+        source.loopEnd = Math.min(this.menuBuffer.duration, MENU_LOOP_SEC);
+        source.connect(gain);
+        source.start();
+        this.menuSource = source;
+      }
+    } else if (this.menuSource && !this.menuStopTimer) {
+      const source = this.menuSource;
+      this.menuStopTimer = setTimeout(() => {
+        try { source.stop(); } catch { /* already stopped */ }
+        source.disconnect();
+        if (this.menuSource === source) this.menuSource = undefined;
+        this.menuStopTimer = undefined;
+      }, 1100);
     }
   }
 
@@ -165,6 +246,10 @@ export class GameAudio {
     this.music.gain.value = 0;
     this.effects.connect(compressor);
     this.music.connect(compressor);
+    // The title theme bypasses the in-game gate: the gate is shut whenever no round is running.
+    this.menuGain = context.createGain();
+    this.menuGain.gain.value = 0;
+    this.menuGain.connect(context.destination);
 
     // A shared, damped echo adds a short urban rumble without a reverb per impact.
     const send = context.createGain();
@@ -206,6 +291,7 @@ export class GameAudio {
     this.effects.gain.setTargetAtTime(clamp(this.settings.volume) * 0.75, time, 0.025);
     this.music.gain.setTargetAtTime(playing ? clamp(this.settings.music) * 0.4 : 0, time, 0.07);
     this.gate.gain.setTargetAtTime(audible ? 0.85 : 0, time, 0.035);
+    this.syncMenuMusic(time);
   }
 
   private remember(id: number): void {
@@ -255,7 +341,23 @@ export class GameAudio {
           [1200,1600,1900,2400].forEach((f,i)=>this.tone(f,.22,.055,'sine',this.effects!,now+i*.09,undefined,pan));
           break;
         }
-        if(event.effect==='ambulance'||event.effect==='goodcop'||event.effect==='badcop') {
+        // Burnout CRASH! scores each event with its own tune. These are original two-second riffs in the same spirit.
+        if(event.effect==='goodcop') {            // upbeat skank: offbeat major stabs, then a rising answer
+          [0.12,0.36,0.6].forEach(offset=>[392,494,587].forEach(f=>this.tone(f,.12,.05,'square',this.effects!,now+offset,undefined,pan,2400)));
+          [523,659,784].forEach((f,i)=>this.tone(f,.14,.07,'triangle',this.effects!,now+.84+i*.1,undefined,pan));
+          break;
+        }
+        if(event.effect==='badcop') {             // minor-second siren dive
+          for(let i=0;i<5;i++)this.tone(i%2?311:330,.2,.08,'sawtooth',this.effects,now+i*.16,i%2?277:294,pan,1500);
+          this.noise(.5,.08,'lowpass',900,this.effects,now,pan,80);
+          break;
+        }
+        if(event.effect==='freeze') {             // glassy bells sliding down a whole-tone ladder
+          [1568,1397,1245,1109,988].forEach((f,i)=>{this.tone(f,.5,.06,'sine',this.effects!,now+i*.09,f*.97,pan);this.tone(f*2.76,.22,.025,'sine',this.effects!,now+i*.09,undefined,pan);});
+          this.noise(.8,.05,'highpass',5200,this.effects,now,pan,0);
+          break;
+        }
+        if(event.effect==='ambulance') {
           for(let i=0;i<4;i++)this.tone(i%2?550:780,.18,.08,'triangle',this.effects,now+i*.19,undefined,pan);
           break;
         }

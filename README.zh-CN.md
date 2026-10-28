@@ -74,6 +74,12 @@
 
 <img src="docs/assets/results.png" alt="结算页：总破坏金额、三项损失账目、本局获得的星星、合约结果、今日最佳和涂装解锁" width="100%">
 
+### 为手机打造
+
+横屏触屏操作（左手摇杆，右手爆破键和技能），HUD 避开安全区，菜单底部常驻「开始连锁」按钮，还有从第一次轻点就响起的**标题音乐**：126 BPM、E Mixolydian 的 16 小节无缝循环，取 Burnout CRASH! 那种 80 年代新浪潮游戏秀的神气，但完全原创。它由 [claude-code-music](https://github.com/yiqiao-yin/claude-code-music) 框架用算术合成，没有采样，没有录音。
+
+`main` 分支是普通网页版；`toy-edition` 分支在此基础上接入 B站 Toy SDK：排行榜、云存档和可存进相册的成绩图。
+
 <br>
 
 ## 运行原理
