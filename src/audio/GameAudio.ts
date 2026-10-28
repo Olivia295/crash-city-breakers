@@ -85,7 +85,7 @@ export class GameAudio {
   get running(): boolean { return this.context?.state === 'running'; }
 
   /** Dev diagnostics: is the title theme actually reaching the output? */
-  debugMenu(): { running: boolean; wanted: boolean; decoded: boolean; playing: boolean; gain: number; rms: number } {
+  debugMenu(): { running: boolean; wanted: boolean; decoded: boolean; playing: boolean; gain: number; rms: number; roundGain: number } {
     let rms = 0;
     if (this.context && this.menuGain) {
       this.menuProbe ??= (() => { const node = this.context!.createAnalyser(); node.fftSize = 2048; this.menuGain!.connect(node); return node; })();
@@ -93,7 +93,7 @@ export class GameAudio {
       this.menuProbe.getFloatTimeDomainData(data);
       rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length);
     }
-    return { running: this.running, wanted: this.menuWanted, decoded: !!this.menuBuffer, playing: !!this.menuSource, gain: this.menuGain?.gain.value ?? 0, rms };
+    return { running: this.running, wanted: this.menuWanted, decoded: !!this.menuBuffer, playing: !!this.menuSource, gain: this.menuGain?.gain.value ?? 0, rms, roundGain: this.music?.gain.value ?? 0 };
   }
 
   /** Ask for the title theme (menu, results). It starts as soon as audio is unlocked and decoded. */
